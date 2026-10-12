@@ -119,9 +119,35 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
         val prefix = getString(if (isPending) R.string.professional_case_new_prefix else R.string.professional_case_active_prefix)
         item.tvCaseTitle.text = "$prefix · $tipo"
 
-        val place = doc.getString("direccion").orEmpty().ifBlank { doc.getString("referencia").orEmpty() }
+        val lat = doc.getDouble("lat")
+        val lon = doc.getDouble("lon")
+        val hasCoordinates = lat != null && lon != null
+        val reference = doc.getString("referencia").orEmpty()
+        val address = doc.getString("direccion").orEmpty()
+        val place = when {
+            address.isNotBlank() -> address
+            reference.isNotBlank() -> reference
+            hasCoordinates -> getString(R.string.professional_location_gps, GeoUtil.formatCoordinates(lat!!, lon!!))
+            else -> getString(R.string.professional_no_location)
+        }
         val timeText = doc.getTimestamp("fechaCreacion")?.let { relativeTime(it.toDate().time) }.orEmpty()
         item.tvCaseSubtitle.text = listOf(place, timeText).filter { it.isNotBlank() }.joinToString(" · ")
+
+        if (hasCoordinates) {
+            item.btnCaseMap.visibility = View.VISIBLE
+            item.btnCaseMap.setOnClickListener {
+                runCatching {
+                    startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse(GeoUtil.mapsUrl(lat!!, lon!!))))
+                }.onFailure { Toast.makeText(this, R.string.report_send_error, Toast.LENGTH_SHORT).show() }
+            }
+        }
+
+        val photo = PhotoUtil.decode(doc.getString("fotoBase64"), doc.id)
+        if (photo != null) {
+            item.ivCasePhoto.visibility = View.VISIBLE
+            item.ivCasePhoto.setImageBitmap(photo)
+            item.ivCasePhoto.setOnClickListener { showEvidence(photo) }
+        }
 
         if (isPending) {
             item.btnCaseAction.text = getString(R.string.professional_btn_take_case)
@@ -152,6 +178,19 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
         }
 
         binding.casesContainer.addView(item.root)
+    }
+
+    private fun showEvidence(photo: android.graphics.Bitmap) {
+        val view = android.widget.ImageView(this).apply {
+            setImageBitmap(photo)
+            adjustViewBounds = true
+            setPadding(dp(8f), dp(8f), dp(8f), dp(8f))
+        }
+        styledDialog()
+            .setTitle(R.string.professional_evidence_title)
+            .setView(view)
+            .setPositiveButton(R.string.btn_close, null)
+            .show()
     }
 
     private fun resolveCase(doc: DocumentSnapshot) {

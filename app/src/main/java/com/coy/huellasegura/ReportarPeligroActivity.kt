@@ -23,6 +23,7 @@ class ReportarPeligroActivity : BaseAccessibleActivity(), TextToSpeech.OnInitLis
     private lateinit var binding: ActivityReportarPeligroBinding
     private var pendingPhotoFile: File? = null
     private var pendingPhotoUri: Uri? = null
+    private var photoPath: String? = null
     private var tts: TextToSpeech? = null
     private var ttsReady = false
 
@@ -31,6 +32,7 @@ class ReportarPeligroActivity : BaseAccessibleActivity(), TextToSpeech.OnInitLis
             binding.photoPreview.setImageURI(pendingPhotoUri)
             binding.photoPreview.visibility = android.view.View.VISIBLE
             binding.photoPrompt.visibility = android.view.View.GONE
+            photoPath = pendingPhotoFile?.absolutePath
             Toast.makeText(this, R.string.report_photo_saved, Toast.LENGTH_SHORT).show()
         } else {
             pendingPhotoFile?.delete()
@@ -64,6 +66,7 @@ class ReportarPeligroActivity : BaseAccessibleActivity(), TextToSpeech.OnInitLis
             val selectedType = findViewById<com.google.android.material.chip.Chip>(selectedChipId)?.text?.toString().orEmpty()
             startActivity(Intent(this, ReportarPeligroUbicacionActivity::class.java).apply {
                 putExtra(ReportarPeligroUbicacionActivity.EXTRA_REPORT_TYPE, selectedType)
+                putExtra(ReportarPeligroUbicacionActivity.EXTRA_PHOTO_PATH, photoPath)
                 putExtra(LoginActivity.EXTRA_USER_NAME, intent.getStringExtra(LoginActivity.EXTRA_USER_NAME))
                 putExtra(ProfileActivity.EXTRA_USER_EMAIL, intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL))
             })

@@ -10,9 +10,6 @@ import com.coy.huellasegura.databinding.ActivityReportarPeligroConfirmarBinding
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.FieldValue
-import org.json.JSONObject
-import java.net.HttpURLConnection
-import java.net.URL
 
 class ReportarPeligroConfirmarActivity : BaseAccessibleActivity() {
 
@@ -22,7 +19,7 @@ class ReportarPeligroConfirmarActivity : BaseAccessibleActivity() {
         const val EXTRA_PLACE_TEXT = "extra_place_text"
         const val EXTRA_REPORT_TYPE = "extra_report_type"
         const val EXTRA_REFERENCE = "extra_reference"
-        private const val USER_AGENT = "HuellaSegura-App/1.0"
+        const val EXTRA_PHOTO_PATH = "extra_photo_path"
     }
 
     private lateinit var binding: ActivityReportarPeligroConfirmarBinding
@@ -69,22 +66,39 @@ class ReportarPeligroConfirmarActivity : BaseAccessibleActivity() {
         val reference = intent.getStringExtra(EXTRA_REFERENCE).orEmpty()
         val phone = binding.etPhone.text.toString().trim()
         val details = binding.etDetails.text.toString().trim()
+        val photoPath = intent.getStringExtra(EXTRA_PHOTO_PATH)
 
         binding.btnEnviar.isEnabled = false
 
-        val report = hashMapOf(
+        // La foto se comprime y codifica fuera del hilo principal. Es opcional en este flujo.
+        Thread {
+            val photo = PhotoUtil.encodeFile(this, photoPath)
+            runOnUiThread {
+                if (!photoPath.isNullOrBlank() && photo == null) {
+                    binding.btnEnviar.isEnabled = true
+                    Toast.makeText(this, R.string.report_photo_prepare_error, Toast.LENGTH_LONG).show()
+                    return@runOnUiThread
+                }
+                submitReport(reportType, reference, phone, details, photo)
+            }
+        }.start()
+    }
+
+    private fun submitReport(reportType: String, reference: String, phone: String, details: String, photo: String?) {
+        val report = hashMapOf<String, Any>(
             "tipo" to reportType,
             "direccion" to resolvedAddress,
             "referencia" to reference,
             "telefono" to phone,
             "detalles" to details,
-            "tieneFoto" to true,
+            "tieneFoto" to (photo != null),
             "flujo" to "normal",
             "estado" to "pendiente",
             "reportanteCorreo" to intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL).orEmpty().trim().lowercase(),
             "reportanteNombre" to intent.getStringExtra(LoginActivity.EXTRA_USER_NAME).orEmpty(),
             "fechaCreacion" to FieldValue.serverTimestamp()
         )
+        if (photo != null) report["fotoBase64"] = photo
         if (!lat.isNaN() && !lon.isNaN()) {
             report["lat"] = lat
             report["lon"] = lon
@@ -107,16 +121,7 @@ class ReportarPeligroConfirmarActivity : BaseAccessibleActivity() {
 
     private fun reverseGeocode(lat: Double, lon: Double) {
         Thread {
-            val address = runCatching {
-                val url = URL("https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon&zoom=18&addressdetails=0")
-                val connection = url.openConnection() as HttpURLConnection
-                connection.setRequestProperty("User-Agent", USER_AGENT)
-                connection.connectTimeout = 8000
-                connection.readTimeout = 8000
-                val response = connection.inputStream.bufferedReader().use { it.readText() }
-                JSONObject(response).optString("display_name").ifBlank { null }
-            }.getOrNull()
-
+            val address = GeoUtil.reverseGeocode(lat, lon)
             runOnUiThread {
                 resolvedAddress = address ?: getString(R.string.report_location_obtained, lat, lon)
                 binding.tvLocationTitle.text = resolvedAddress

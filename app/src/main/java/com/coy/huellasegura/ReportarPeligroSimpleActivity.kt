@@ -215,19 +215,43 @@ class ReportarPeligroSimpleActivity : BaseAccessibleActivity(), TextToSpeech.OnI
     private fun sendReport() {
         binding.btnSend.isEnabled = false
 
-        val report = hashMapOf(
+        val photoPath = pendingPhotoFile?.absolutePath
+        val location = lastLocation
+        val typedAddress = if (!usingCurrentLocation) binding.etAddress.text.toString().trim() else ""
+
+        // La foto y la dirección se resuelven fuera del hilo principal.
+        Thread {
+            val photo = PhotoUtil.encodeFile(this, photoPath)
+            val address = when {
+                typedAddress.isNotBlank() -> typedAddress
+                usingCurrentLocation && location != null -> GeoUtil.reverseGeocode(location.latitude, location.longitude).orEmpty()
+                else -> ""
+            }
+            runOnUiThread {
+                if (photo == null) {
+                    binding.btnSend.isEnabled = true
+                    Toast.makeText(this, R.string.report_photo_prepare_error, Toast.LENGTH_LONG).show()
+                } else {
+                    submitReport(photo, address, location)
+                }
+            }
+        }.start()
+    }
+
+    private fun submitReport(photo: String, address: String, location: Location?) {
+        val report = hashMapOf<String, Any>(
             "tipo" to selectedType,
-            "direccion" to if (!usingCurrentLocation) binding.etAddress.text.toString().trim() else "",
+            "direccion" to address,
             "telefono" to "",
             "detalles" to "",
             "tieneFoto" to true,
+            "fotoBase64" to photo,
             "flujo" to "simplificado",
             "estado" to "pendiente",
             "reportanteCorreo" to intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL).orEmpty().trim().lowercase(),
             "reportanteNombre" to intent.getStringExtra(LoginActivity.EXTRA_USER_NAME).orEmpty(),
             "fechaCreacion" to FieldValue.serverTimestamp()
         )
-        val location = lastLocation
         if (usingCurrentLocation && location != null) {
             report["lat"] = location.latitude
             report["lon"] = location.longitude

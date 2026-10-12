@@ -361,4 +361,11 @@
     <string name="list_error">No se pudo cargar. Revisa tu conexión e inténtalo de nuevo.</string>
     <string name="cd_back">Volver</string>
     <string name="cd_accessibility_settings">Ajustes de accesibilidad</string>
+    <string name="professional_btn_view_map">Ver en el mapa</string>
+    <string name="professional_photo_cd">Foto del reporte. Toca para ampliar</string>
+    <string name="professional_evidence_title">Evidencia del reporte</string>
+    <string name="professional_location_gps">Ubicación GPS: %1$s</string>
+    <string name="professional_no_location">Sin ubicación</string>
+    <string name="report_photo_prepare_error">No se pudo preparar la foto. Vuelve a tomarla e inténtalo de nuevo.</string>
+    <string name="btn_close">Cerrar</string>
 </resources>

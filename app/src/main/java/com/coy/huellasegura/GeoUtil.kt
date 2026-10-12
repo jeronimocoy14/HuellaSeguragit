@@ -1,0 +1,28 @@
+package com.coy.huellasegura
+
+import org.json.JSONObject
+import java.net.HttpURLConnection
+import java.net.URL
+import java.util.Locale
+
+object GeoUtil {
+    private const val USER_AGENT = "HuellaSegura-App/1.0"
+
+    /** Dirección legible de unas coordenadas (OpenStreetMap). Bloquea: llamar desde un hilo secundario. */
+    fun reverseGeocode(lat: Double, lon: Double): String? = runCatching {
+        val url = URL("https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon&zoom=18&addressdetails=0")
+        val connection = url.openConnection() as HttpURLConnection
+        connection.setRequestProperty("User-Agent", USER_AGENT)
+        connection.connectTimeout = 8000
+        connection.readTimeout = 8000
+        val response = connection.inputStream.bufferedReader().use { it.readText() }
+        JSONObject(response).optString("display_name").ifBlank { null }
+    }.getOrNull()
+
+    /** Enlace para abrir el punto en la app de mapas o en el navegador. */
+    fun mapsUrl(lat: Double, lon: Double): String =
+        String.format(Locale.US, "https://www.google.com/maps/search/?api=1&query=%.6f,%.6f", lat, lon)
+
+    fun formatCoordinates(lat: Double, lon: Double): String =
+        String.format(Locale.US, "%.5f, %.5f", lat, lon)
+}

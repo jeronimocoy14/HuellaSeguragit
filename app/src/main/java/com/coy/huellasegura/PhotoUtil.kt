@@ -30,6 +30,14 @@ object PhotoUtil {
         null
     }
 
+    /** Foto guardada en un archivo local (p. ej. la que tomó la cámara). Bloquea: usar un hilo secundario. */
+    fun encodeFile(context: Context, path: String?): String? {
+        if (path.isNullOrBlank()) return null
+        val file = java.io.File(path)
+        if (!file.isFile || file.length() == 0L) return null
+        return encode(context, Uri.fromFile(file))
+    }
+
     fun decode(base64: String?, key: String): Bitmap? {
         if (base64.isNullOrBlank()) return null
         val cacheKey = "$key:${base64.length}"

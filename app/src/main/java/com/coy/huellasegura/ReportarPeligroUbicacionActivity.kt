@@ -24,6 +24,7 @@ class ReportarPeligroUbicacionActivity : BaseAccessibleActivity(), TextToSpeech.
 
     companion object {
         const val EXTRA_REPORT_TYPE = "extra_report_type"
+        const val EXTRA_PHOTO_PATH = "extra_photo_path"
     }
 
     private lateinit var binding: ActivityReportarPeligroUbicacionBinding
@@ -161,6 +162,7 @@ class ReportarPeligroUbicacionActivity : BaseAccessibleActivity(), TextToSpeech.
         val intent = android.content.Intent(this, ReportarPeligroConfirmarActivity::class.java)
         intent.putExtra(ReportarPeligroConfirmarActivity.EXTRA_REPORT_TYPE, reportType)
         intent.putExtra(ReportarPeligroConfirmarActivity.EXTRA_REFERENCE, reference)
+        intent.putExtra(ReportarPeligroConfirmarActivity.EXTRA_PHOTO_PATH, getIntent().getStringExtra(EXTRA_PHOTO_PATH))
         intent.putExtra(LoginActivity.EXTRA_USER_NAME, getIntent().getStringExtra(LoginActivity.EXTRA_USER_NAME))
         intent.putExtra(ProfileActivity.EXTRA_USER_EMAIL, getIntent().getStringExtra(ProfileActivity.EXTRA_USER_EMAIL))
         if (place.isNotBlank()) {

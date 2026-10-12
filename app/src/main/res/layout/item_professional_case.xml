@@ -8,22 +8,64 @@
     android:orientation="vertical"
     android:padding="14dp">
 
-    <TextView
-        android:id="@+id/tvCaseTitle"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/text_primary"
-        android:textSize="15sp"
-        android:textStyle="bold" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tvCaseSubtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:lineSpacingMultiplier="1.4"
-        android:textColor="@color/text_secondary"
-        android:textSize="12.5sp" />
+        <ImageView
+            android:id="@+id/ivCasePhoto"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/bg_tag_pill"
+            android:clipToOutline="true"
+            android:contentDescription="@string/professional_photo_cd"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvCaseTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvCaseSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:lineSpacingMultiplier="1.4"
+                android:textColor="@color/text_secondary"
+                android:textSize="12.5sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCaseMap"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/professional_btn_view_map"
+        android:textAllCaps="false"
+        android:textColor="@color/brand_dark"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_location_pin"
+        app:iconGravity="textStart"
+        app:iconSize="18dp"
+        app:iconTint="@color/brand_dark"
+        app:strokeColor="@color/field_border" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnCaseAction"
@@ -42,13 +84,13 @@
         android:layout_marginTop="8dp"
         android:text="@string/professional_btn_chat_reporter"
         android:textAllCaps="false"
-        android:textColor="@color/link_color"
+        android:textColor="@color/brand_dark"
         android:textSize="14sp"
         android:visibility="gone"
         app:cornerRadius="12dp"
         app:icon="@drawable/ic_chat"
         app:iconGravity="textStart"
         app:iconSize="18dp"
-        app:iconTint="@color/link_color"
+        app:iconTint="@color/brand_dark"
         app:strokeColor="@color/field_border" />
 </LinearLayout>
