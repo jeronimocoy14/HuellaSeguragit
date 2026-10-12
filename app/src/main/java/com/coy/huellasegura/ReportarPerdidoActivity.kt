@@ -146,14 +146,17 @@ class ReportarPerdidoActivity : BaseAccessibleActivity() {
             "reportanteNombre" to intent.getStringExtra(LoginActivity.EXTRA_USER_NAME).orEmpty(),
             "fechaCreacion" to FieldValue.serverTimestamp()
         )
-        Firebase.firestore.collection("perdidos").add(data)
-            .addOnSuccessListener {
-                Toast.makeText(this, R.string.perdidos_sent, Toast.LENGTH_LONG).show()
+        OfflineWrite.run(
+            this,
+            Firebase.firestore.collection("perdidos").document().set(data),
+            onDone = { queued ->
+                Toast.makeText(this, if (queued) R.string.perdidos_queued else R.string.perdidos_sent, Toast.LENGTH_LONG).show()
                 finish()
-            }
-            .addOnFailureListener {
+            },
+            onError = {
                 binding.btnEnviar.isEnabled = true
                 Toast.makeText(this, R.string.perdidos_send_error, Toast.LENGTH_SHORT).show()
             }
+        )
     }
 }

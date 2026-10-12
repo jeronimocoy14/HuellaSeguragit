@@ -131,13 +131,16 @@ class PerdidoDetalleActivity : BaseAccessibleActivity() {
             "reportanteNombre" to userName,
             "fechaCreacion" to FieldValue.serverTimestamp()
         )
-        Firebase.firestore.collection("reportes").add(report)
-            .addOnSuccessListener {
-                Toast.makeText(this, R.string.perdidos_found_sent, Toast.LENGTH_LONG).show()
-            }
-            .addOnFailureListener {
+        OfflineWrite.run(
+            this,
+            Firebase.firestore.collection("reportes").document().set(report),
+            onDone = { queued ->
+                Toast.makeText(this, if (queued) R.string.perdidos_found_queued else R.string.perdidos_found_sent, Toast.LENGTH_LONG).show()
+            },
+            onError = {
                 Toast.makeText(this, R.string.perdidos_send_error, Toast.LENGTH_SHORT).show()
             }
+        )
     }
 
     override fun onDestroy() {

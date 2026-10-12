@@ -13,6 +13,8 @@ object SessionRouter {
     const val SENIOR_AGE = 65
     private const val ROL_VETERINARIO = "veterinario"
     private const val ROL_FUNCIONARIO = "funcionario"
+    private const val ROL_CIUDADANO = "ciudadano"
+    private const val CACHE_FILE = "session_cache"
 
     /**
      * Decide a qué pantalla va la persona según su rol en `roles_profesionales`.
@@ -29,12 +31,47 @@ object SessionRouter {
         db.collection("roles_profesionales").document(email).get()
             .addOnSuccessListener { roleDoc ->
                 when (roleDoc.getString("rol")) {
-                    ROL_VETERINARIO -> openVeterinario(activity, email)
-                    ROL_FUNCIONARIO -> openFuncionario(activity, email)
+                    ROL_VETERINARIO -> {
+                        remember(activity, email, ROL_VETERINARIO)
+                        openVeterinario(activity, email)
+                    }
+                    ROL_FUNCIONARIO -> {
+                        remember(activity, email, ROL_FUNCIONARIO)
+                        openFuncionario(activity, email)
+                    }
                     else -> loadCitizen(activity, email, direct, onError)
                 }
             }
-            .addOnFailureListener { onError() }
+            .addOnFailureListener { routeFromCache(activity, email, direct, onError) }
+    }
+
+    /** Guarda en el teléfono a dónde va esta cuenta, para poder abrir la app sin internet. */
+    private fun remember(activity: Activity, email: String, rol: String, nombre: String = "", edad: Int? = null) {
+        activity.getSharedPreferences(CACHE_FILE, Activity.MODE_PRIVATE).edit()
+            .putString("rol_$email", rol)
+            .putString("nombre_$email", nombre)
+            .putInt("edad_$email", edad ?: -1)
+            .apply()
+    }
+
+    /**
+     * Sin internet no se puede leer el rol en Firestore. Si esta cuenta ya entró antes en este
+     * teléfono se usa lo guardado; si no, se pide iniciar sesión.
+     */
+    private fun routeFromCache(activity: Activity, email: String, direct: Boolean, onError: () -> Unit) {
+        val cache = activity.getSharedPreferences(CACHE_FILE, Activity.MODE_PRIVATE)
+        when (cache.getString("rol_$email", null)) {
+            ROL_VETERINARIO -> openVeterinario(activity, email)
+            ROL_FUNCIONARIO -> openFuncionario(activity, email)
+            ROL_CIUDADANO -> openCitizen(
+                activity,
+                email,
+                cache.getString("nombre_$email", "").orEmpty().ifBlank { email.substringBefore("@") },
+                cache.getInt("edad_$email", -1).takeIf { it >= 0 },
+                direct
+            )
+            else -> onError()
+        }
     }
 
     private fun openVeterinario(activity: Activity, email: String) {
@@ -64,9 +101,10 @@ object SessionRouter {
                 val apellido = doc.getString("apellido").orEmpty()
                 val fullName = "$nombre $apellido".trim().ifBlank { email.substringBefore("@") }
                 val age = doc.getLong("fechaNacimientoMillis")?.let { ageFrom(it) }
+                remember(activity, email, ROL_CIUDADANO, fullName, age)
                 openCitizen(activity, email, fullName, age, direct)
             }
-            .addOnFailureListener { onError() }
+            .addOnFailureListener { routeFromCache(activity, email, direct, onError) }
     }
 
     private fun openCitizen(activity: Activity, email: String, name: String, age: Int?, direct: Boolean) {

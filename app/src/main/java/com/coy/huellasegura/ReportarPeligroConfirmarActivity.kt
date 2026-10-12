@@ -104,19 +104,23 @@ class ReportarPeligroConfirmarActivity : BaseAccessibleActivity() {
             report["lon"] = lon
         }
 
-        Firebase.firestore.collection("reportes").add(report)
-            .addOnSuccessListener {
+        OfflineWrite.run(
+            this,
+            Firebase.firestore.collection("reportes").document().set(report),
+            onDone = { queued ->
                 startActivity(Intent(this, ReportSentActivity::class.java).apply {
                     putExtra(LoginActivity.EXTRA_USER_NAME, intent.getStringExtra(LoginActivity.EXTRA_USER_NAME))
                     putExtra(ProfileActivity.EXTRA_USER_EMAIL, intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL))
                     putExtra(ReportSentActivity.EXTRA_SIMPLIFIED, false)
+                    putExtra(ReportSentActivity.EXTRA_QUEUED, queued)
                 })
                 finish()
-            }
-            .addOnFailureListener {
+            },
+            onError = {
                 binding.btnEnviar.isEnabled = true
                 Toast.makeText(this, R.string.report_send_error, Toast.LENGTH_SHORT).show()
             }
+        )
     }
 
     private fun reverseGeocode(lat: Double, lon: Double) {

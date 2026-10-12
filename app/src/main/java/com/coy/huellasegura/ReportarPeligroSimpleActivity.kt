@@ -170,29 +170,15 @@ class ReportarPeligroSimpleActivity : BaseAccessibleActivity(), TextToSpeech.OnI
     }
 
     private fun fetchLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (!LocationUtil.hasPermission(this)) {
             showLocationFailed()
             return
         }
         binding.tvLocationStatus.text = getString(R.string.report_simple_location_getting)
-        val locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
-        val providers = listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)
-        val cached = providers.mapNotNull { provider ->
-            runCatching { locationManager.getLastKnownLocation(provider) }.getOrNull()
-        }.maxByOrNull { it.time }
-
-        if (cached != null) {
-            onLocationObtained(cached)
-            return
+        // Ubicación actual; la última conocida solo se acepta si es reciente (menos de 2 minutos).
+        LocationUtil.getCurrent(this) { location ->
+            if (location != null) onLocationObtained(location) else showLocationFailed()
         }
-
-        runCatching {
-            val provider = providers.firstOrNull { locationManager.isProviderEnabled(it) } ?: run {
-                showLocationFailed()
-                return
-            }
-            locationManager.requestSingleUpdate(provider, locationListener, mainLooper)
-        }.onFailure { showLocationFailed() }
     }
 
     private fun onLocationObtained(location: Location) {
@@ -257,20 +243,24 @@ class ReportarPeligroSimpleActivity : BaseAccessibleActivity(), TextToSpeech.OnI
             report["lon"] = location.longitude
         }
 
-        Firebase.firestore.collection("reportes").add(report)
-            .addOnSuccessListener {
-                speak(getString(R.string.report_simple_sent_confirmation))
+        OfflineWrite.run(
+            this,
+            Firebase.firestore.collection("reportes").document().set(report),
+            onDone = { queued ->
+                speak(getString(if (queued) R.string.report_queued_title else R.string.report_simple_sent_confirmation))
                 startActivity(Intent(this, ReportSentActivity::class.java).apply {
                     putExtra(LoginActivity.EXTRA_USER_NAME, intent.getStringExtra(LoginActivity.EXTRA_USER_NAME))
                     putExtra(ProfileActivity.EXTRA_USER_EMAIL, intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL))
                     putExtra(ReportSentActivity.EXTRA_SIMPLIFIED, true)
+                    putExtra(ReportSentActivity.EXTRA_QUEUED, queued)
                 })
                 finish()
-            }
-            .addOnFailureListener {
+            },
+            onError = {
                 binding.btnSend.isEnabled = true
                 Toast.makeText(this, R.string.report_send_error, Toast.LENGTH_SHORT).show()
             }
+        )
     }
 
     override fun onInit(status: Int) {

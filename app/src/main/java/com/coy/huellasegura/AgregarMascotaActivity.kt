@@ -81,11 +81,17 @@ class AgregarMascotaActivity : AppCompatActivity() {
             "comportamiento" to emptyList<String>(),
             "fechaCreacion" to FieldValue.serverTimestamp()
         )
-        Firebase.firestore.collection("mascotas").add(mascota)
-            .addOnSuccessListener { finish() }
-            .addOnFailureListener {
+        OfflineWrite.run(
+            this,
+            Firebase.firestore.collection("mascotas").document().set(mascota),
+            onDone = { queued ->
+                if (queued) android.widget.Toast.makeText(this, R.string.pets_queued, android.widget.Toast.LENGTH_LONG).show()
+                finish()
+            },
+            onError = {
                 binding.btnGuardar.isEnabled = true
                 android.widget.Toast.makeText(this, R.string.report_send_error, android.widget.Toast.LENGTH_SHORT).show()
             }
+        )
     }
 }

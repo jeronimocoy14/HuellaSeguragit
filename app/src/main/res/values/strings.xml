@@ -377,4 +377,9 @@
     <string name="chat_location_error">No pudimos obtener tu ubicación. Revisa que el GPS esté activado.</string>
     <string name="chat_location_no_permission">Sin permiso de ubicación. Puedes activarlo en los ajustes del teléfono.</string>
     <string name="chat_view_map">Ver en el mapa</string>
+    <string name="report_queued_title">Reporte guardado</string>
+    <string name="report_queued_subtitle">Lo guardamos en tu teléfono y se enviará solo cuando vuelvas a tener señal. No necesitas hacer nada más.</string>
+    <string name="perdidos_queued">Solicitud guardada. Se enviará cuando vuelvas a tener señal.</string>
+    <string name="perdidos_found_queued">Aviso guardado. Se enviará cuando vuelvas a tener señal.</string>
+    <string name="pets_queued">Mascota guardada. Se enviará cuando vuelvas a tener señal.</string>
 </resources>

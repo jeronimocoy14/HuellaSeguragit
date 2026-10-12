@@ -79,24 +79,10 @@ class ReportarPeligroUbicacionActivity : BaseAccessibleActivity(), TextToSpeech.
     }
 
     private fun fetchLocation() {
-        val locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
-        val providers = listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)
-        val cached = providers.mapNotNull { provider ->
-            runCatching { locationManager.getLastKnownLocation(provider) }.getOrNull()
-        }.maxByOrNull { it.time }
-
-        if (cached != null) {
-            onLocationObtained(cached)
-            return
+        // Ubicación actual; la última conocida solo se acepta si es reciente (menos de 2 minutos).
+        LocationUtil.getCurrent(this) { location ->
+            if (location != null) onLocationObtained(location) else showLocationFailed()
         }
-
-        runCatching {
-            val provider = providers.firstOrNull { locationManager.isProviderEnabled(it) } ?: run {
-                showLocationFailed()
-                return
-            }
-            locationManager.requestSingleUpdate(provider, locationListener, mainLooper)
-        }.onFailure { showLocationFailed() }
     }
 
     private fun onLocationObtained(location: Location) {

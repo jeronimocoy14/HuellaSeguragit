@@ -13,6 +13,7 @@ class ReportSentActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_SIMPLIFIED = "extra_simplified"
+        const val EXTRA_QUEUED = "extra_queued"
     }
 
     private lateinit var binding: ActivityReportSentBinding
@@ -30,6 +31,10 @@ class ReportSentActivity : AppCompatActivity() {
         }
 
         val simplified = intent.getBooleanExtra(EXTRA_SIMPLIFIED, false)
+        if (intent.getBooleanExtra(EXTRA_QUEUED, false)) {
+            binding.tvTitle.setText(R.string.report_queued_title)
+            binding.tvSubtitle.setText(R.string.report_queued_subtitle)
+        }
         val userName = intent.getStringExtra(LoginActivity.EXTRA_USER_NAME)
         val userEmail = intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL)
         val destination = if (simplified) HomeSeniorActivity::class.java else MainDashboardActivity::class.java
