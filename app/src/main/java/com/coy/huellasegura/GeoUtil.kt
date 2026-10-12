@@ -9,12 +9,12 @@ object GeoUtil {
     private const val USER_AGENT = "HuellaSegura-App/1.0"
 
     /** Dirección legible de unas coordenadas (OpenStreetMap). Bloquea: llamar desde un hilo secundario. */
-    fun reverseGeocode(lat: Double, lon: Double): String? = runCatching {
+    fun reverseGeocode(lat: Double, lon: Double, timeoutMs: Int = 8000): String? = runCatching {
         val url = URL("https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon&zoom=18&addressdetails=0")
         val connection = url.openConnection() as HttpURLConnection
         connection.setRequestProperty("User-Agent", USER_AGENT)
-        connection.connectTimeout = 8000
-        connection.readTimeout = 8000
+        connection.connectTimeout = timeoutMs
+        connection.readTimeout = timeoutMs
         val response = connection.inputStream.bufferedReader().use { it.readText() }
         JSONObject(response).optString("display_name").ifBlank { null }
     }.getOrNull()

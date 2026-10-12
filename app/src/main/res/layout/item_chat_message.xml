@@ -24,6 +24,25 @@
             android:textSize="15sp" />
 
         <TextView
+            android:id="@+id/tvDireccion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:lineSpacingExtra="2dp"
+            android:textSize="13sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvMapa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/chat_view_map"
+            android:textSize="13.5sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
             android:id="@+id/tvHora"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

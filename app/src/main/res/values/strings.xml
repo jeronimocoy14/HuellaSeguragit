@@ -368,4 +368,13 @@
     <string name="professional_resolve_confirm_message">El caso «%1$s» saldrá de tu lista de casos en atención. Podrás deshacerlo unos segundos después.</string>
     <string name="professional_case_reopened">Caso devuelto a «en atención»</string>
     <string name="btn_deshacer">Deshacer</string>
+    <string name="chat_share_location_cd">Enviar mi ubicación</string>
+    <string name="chat_location_title">Ubicación compartida</string>
+    <string name="chat_location_confirm_title">¿Enviar tu ubicación?</string>
+    <string name="chat_location_confirm_message">Se compartirá tu ubicación actual en esta conversación.</string>
+    <string name="chat_location_confirm_send">Enviar</string>
+    <string name="chat_location_getting">Obteniendo tu ubicación…</string>
+    <string name="chat_location_error">No pudimos obtener tu ubicación. Revisa que el GPS esté activado.</string>
+    <string name="chat_location_no_permission">Sin permiso de ubicación. Puedes activarlo en los ajustes del teléfono.</string>
+    <string name="chat_view_map">Ver en el mapa</string>
 </resources>

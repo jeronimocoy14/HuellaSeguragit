@@ -1,5 +1,7 @@
 package com.coy.huellasegura
 
+import android.Manifest
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -34,7 +37,15 @@ import java.util.Locale
 
 private sealed class ChatRow {
     data class Day(val key: String, val label: String) : ChatRow()
-    data class Msg(val id: String, val texto: String, val mine: Boolean, val hora: String) : ChatRow()
+    data class Msg(
+        val id: String,
+        val texto: String,
+        val mine: Boolean,
+        val hora: String,
+        val lat: Double? = null,
+        val lon: Double? = null,
+        val direccion: String = ""
+    ) : ChatRow()
 }
 
 class ChatActivity : BaseAccessibleActivity() {
@@ -58,6 +69,12 @@ class ChatActivity : BaseAccessibleActivity() {
     private var firstRender = true
 
     private val isCitizen get() = role == ROLE_CIUDADANO
+
+    private val requestLocationPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (granted) confirmShareLocation()
+            else Toast.makeText(this, R.string.chat_location_no_permission, Toast.LENGTH_LONG).show()
+        }
     private val unreadField get() = if (isCitizen) "noLeidoCiudadano" else "noLeidoFuncionario"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,6 +110,10 @@ class ChatActivity : BaseAccessibleActivity() {
         binding.btnBack.setOnClickListener { finish() }
         binding.btnSend.enablePressScale(0.92f)
         binding.btnSend.setOnClickListener { send() }
+        binding.btnLocation.setOnClickListener {
+            if (LocationUtil.hasPermission(this)) confirmShareLocation()
+            else requestLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
         binding.etMessage.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
@@ -140,12 +161,16 @@ class ChatActivity : BaseAccessibleActivity() {
                 rows.add(ChatRow.Day(dayKey, dayLabel(date)))
                 lastDay = dayKey
             }
+            val isLocation = doc.getString("tipo") == "ubicacion"
             rows.add(
                 ChatRow.Msg(
                     id = doc.id,
                     texto = doc.getString("texto").orEmpty(),
                     mine = doc.getString("remitente") == role,
-                    hora = timeFormat.format(date)
+                    hora = timeFormat.format(date),
+                    lat = if (isLocation) doc.getDouble("lat") else null,
+                    lon = if (isLocation) doc.getDouble("lon") else null,
+                    direccion = if (isLocation) doc.getString("direccion").orEmpty() else ""
                 )
             )
         }
@@ -179,7 +204,48 @@ class ChatActivity : BaseAccessibleActivity() {
         val texto = binding.etMessage.text.toString().trim()
         if (texto.isEmpty()) return
         binding.etMessage.setText("")
+        sendMessage(texto)
+    }
 
+    /** Pide confirmación: la ubicación es un dato sensible. */
+    private fun confirmShareLocation() {
+        styledDialog()
+            .setTitle(R.string.chat_location_confirm_title)
+            .setMessage(R.string.chat_location_confirm_message)
+            .setNegativeButton(R.string.btn_cancelar, null)
+            .setPositiveButton(R.string.chat_location_confirm_send) { _, _ -> shareLocation() }
+            .show()
+    }
+
+    private fun shareLocation() {
+        binding.btnLocation.isEnabled = false
+        Toast.makeText(this, R.string.chat_location_getting, Toast.LENGTH_SHORT).show()
+        LocationUtil.getCurrent(this) { location ->
+            if (location == null) {
+                binding.btnLocation.isEnabled = true
+                Toast.makeText(this, R.string.chat_location_error, Toast.LENGTH_LONG).show()
+                return@getCurrent
+            }
+            // La dirección es opcional: si no llega rápido se envían solo las coordenadas.
+            Thread {
+                val address = GeoUtil.reverseGeocode(location.latitude, location.longitude, 4000).orEmpty()
+                runOnUiThread {
+                    binding.btnLocation.isEnabled = true
+                    sendMessage(
+                        texto = getString(R.string.chat_location_title),
+                        extra = mapOf(
+                            "tipo" to "ubicacion",
+                            "lat" to location.latitude,
+                            "lon" to location.longitude,
+                            "direccion" to address
+                        )
+                    )
+                }
+            }.start()
+        }
+    }
+
+    private fun sendMessage(texto: String, extra: Map<String, Any> = emptyMap()) {
         val myEmail = intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL).orEmpty()
         val chatData = mutableMapOf<String, Any>(
             "ultimoMensaje" to texto,
@@ -196,12 +262,13 @@ class ChatActivity : BaseAccessibleActivity() {
             chatData["noLeidoCiudadano"] = true
         }
 
-        val message = mapOf(
+        val message = mutableMapOf<String, Any>(
             "texto" to texto,
             "remitente" to role,
             "remitenteCorreo" to myEmail,
             "fechaCreacion" to FieldValue.serverTimestamp()
         )
+        message.putAll(extra)
 
         val batch = Firebase.firestore.batch()
         batch.set(chatRef, chatData, SetOptions.merge())
@@ -251,6 +318,28 @@ class ChatActivity : BaseAccessibleActivity() {
             binding.tvHora.setTextColor(
                 ContextCompat.getColor(this@ChatActivity, if (row.mine) R.color.splash_subtitle else R.color.text_secondary)
             )
+
+            val textColor = ContextCompat.getColor(this@ChatActivity, if (row.mine) android.R.color.white else R.color.text_primary)
+            val hasLocation = row.lat != null && row.lon != null
+            binding.tvDireccion.visibility = if (hasLocation) View.VISIBLE else View.GONE
+            binding.tvMapa.visibility = if (hasLocation) View.VISIBLE else View.GONE
+            if (hasLocation) {
+                val lat = row.lat!!
+                val lon = row.lon!!
+                binding.tvDireccion.maxWidth = maxTextWidth
+                binding.tvDireccion.text = row.direccion.ifBlank { GeoUtil.formatCoordinates(lat, lon) }
+                binding.tvDireccion.setTextColor(textColor)
+                binding.tvMapa.setTextColor(textColor)
+                binding.tvMapa.paintFlags = binding.tvMapa.paintFlags or android.graphics.Paint.UNDERLINE_TEXT_FLAG
+                binding.bubble.setOnClickListener {
+                    runCatching {
+                        startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse(GeoUtil.mapsUrl(lat, lon))))
+                    }
+                }
+            } else {
+                binding.bubble.setOnClickListener(null)
+                binding.bubble.isClickable = false
+            }
 
             val params = binding.bubble.layoutParams as LinearLayout.LayoutParams
             params.gravity = if (row.mine) android.view.Gravity.END else android.view.Gravity.START
