@@ -1,0 +1,14 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.HUELLASEGURA" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/accent_green</item>
+        <item name="colorOnPrimary">@color/surface_background</item>
+        <item name="colorSecondary">@color/brand_dark</item>
+        <item name="colorSecondaryContainer">@color/accent_green</item>
+        <item name="colorOnSecondaryContainer">@color/surface_background</item>
+        <item name="android:windowBackground">@color/surface_background</item>
+    </style>
+
+    <style name="Theme.HUELLASEGURA" parent="Base.Theme.HUELLASEGURA" />
+</resources>

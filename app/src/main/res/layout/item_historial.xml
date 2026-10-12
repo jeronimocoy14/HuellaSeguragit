@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/bg_card"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:padding="14dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/flBadge"
+            android:layout_width="40dp"
+            android:layout_height="40dp">
+
+            <ImageView
+                android:id="@+id/ivStatusIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:contentDescription="@null" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvTitulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="14.5sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvSubtitulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="12.5sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@null"
+            android:rotation="180"
+            android:src="@drawable/ic_arrow_back"
+            android:tint="@color/text_secondary" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvStatusPill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingStart="10dp"
+        android:paddingTop="3dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="3dp"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvProximaVisita"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:drawablePadding="6dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/brand_dark"
+        android:textSize="12.5sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:drawableStartCompat="@drawable/ic_calendar" />
+
+    <TextView
+        android:id="@+id/tvMotivo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/danger_red_dark_text"
+        android:textSize="12.5sp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEditar"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:minWidth="0dp"
+            android:text="@string/btn_editar"
+            android:textAllCaps="false"
+            android:textColor="@color/brand_dark"
+            android:textSize="12.5sp"
+            app:cornerRadius="18dp"
+            app:strokeColor="@color/field_border" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAnular"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:minWidth="0dp"
+            android:text="@string/pets_btn_annul"
+            android:textAllCaps="false"
+            android:textColor="@color/danger_red"
+            android:textSize="12.5sp"
+            app:cornerRadius="18dp"
+            app:strokeColor="@color/danger_red_soft" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/decision"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRechazar"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:text="@string/btn_rechazar"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:textSize="13.5sp"
+            app:cornerRadius="12dp"
+            app:strokeColor="@color/field_border" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAceptar"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/brand_dark"
+            android:text="@string/btn_aceptar"
+            android:textAllCaps="false"
+            android:textSize="13.5sp"
+            app:cornerRadius="12dp" />
+    </LinearLayout>
+</LinearLayout>

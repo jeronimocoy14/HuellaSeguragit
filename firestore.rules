@@ -1,0 +1,124 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- Funciones auxiliares ----------
+    function signedIn() {
+      return request.auth != null && request.auth.token.email != null;
+    }
+
+    function myEmail() {
+      return request.auth.token.email.lower();
+    }
+
+    function roleOf(email) {
+      return exists(/databases/$(database)/documents/roles_profesionales/$(email))
+        ? get(/databases/$(database)/documents/roles_profesionales/$(email)).data.rol
+        : '';
+    }
+
+    function isVet() {
+      return signedIn() && roleOf(myEmail()) == 'veterinario';
+    }
+
+    function isFuncionario() {
+      return signedIn() && roleOf(myEmail()) == 'funcionario';
+    }
+
+    function onlyChanges(keys) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+
+    // ---------- Roles (solo se asignan desde la consola de Firebase) ----------
+    match /roles_profesionales/{email} {
+      allow read: if signedIn() && myEmail() == email;
+      allow write: if false;
+    }
+
+    // ---------- Perfil del ciudadano ----------
+    match /usuarios/{email} {
+      allow read, create, update: if signedIn() && myEmail() == email;
+      allow delete: if false;
+    }
+
+    // ---------- Veterinarios ----------
+    match /veterinarios/{email} {
+      allow read: if signedIn();
+      allow create: if isVet() && myEmail() == email
+        && request.resource.data.estado == 'pendiente';
+      // La comunidad revisa las solicitudes de otros veterinarios (nunca la propia).
+      allow update: if signedIn() && myEmail() != email && onlyChanges(['estado']);
+      allow delete: if signedIn() && myEmail() != email;
+    }
+
+    // ---------- Mascotas ----------
+    match /mascotas/{mascotaId} {
+      allow read: if isVet() || (signedIn() && resource.data.duenoCorreo == myEmail());
+      allow create: if isVet()
+        && request.resource.data.creadoPorVet == myEmail()
+        && request.resource.data.estado == 'pendiente';
+      // El dueño acepta la mascota y agrega comportamiento; puede rechazarla (borrar).
+      allow update: if signedIn() && resource.data.duenoCorreo == myEmail()
+        && onlyChanges(['estado', 'comportamiento']);
+      allow delete: if signedIn() && resource.data.duenoCorreo == myEmail();
+
+      match /historial/{registroId} {
+        function esDueno() {
+          return signedIn()
+            && get(/databases/$(database)/documents/mascotas/$(mascotaId)).data.duenoCorreo == myEmail();
+        }
+
+        allow read: if isVet() || esDueno();
+        allow create: if isVet()
+          && request.resource.data.creadoPorVet == myEmail()
+          && request.resource.data.estado == 'pendiente';
+        // El veterinario edita o anula; solo el dueño puede aceptar.
+        allow update: if (isVet() && request.resource.data.estado != 'aceptado')
+          || (isVet() && resource.data.estado == 'aceptado')
+          || (esDueno() && resource.data.estado == 'pendiente'
+              && request.resource.data.estado == 'aceptado' && onlyChanges(['estado']));
+        allow delete: if esDueno() && resource.data.estado == 'pendiente';
+      }
+    }
+
+    // ---------- Reportes de animales en peligro y avisos "lo encontré" ----------
+    match /reportes/{reporteId} {
+      allow read: if isFuncionario()
+        || (signedIn() && resource.data.reportanteCorreo == myEmail())
+        || (signedIn() && resource.data.perdidoDuenoCorreo == myEmail());
+      allow create: if signedIn()
+        && request.resource.data.reportanteCorreo == myEmail()
+        && request.resource.data.estado == 'pendiente';
+      allow update: if isFuncionario();
+      allow delete: if isFuncionario()
+        || (signedIn() && resource.data.perdidoDuenoCorreo == myEmail());
+    }
+
+    // ---------- Perdidos y encontrados ----------
+    match /perdidos/{perdidoId} {
+      allow read: if isFuncionario()
+        || (signedIn() && resource.data.reportanteCorreo == myEmail())
+        || (signedIn() && resource.data.estado == 'publicado');
+      allow create: if signedIn()
+        && request.resource.data.reportanteCorreo == myEmail()
+        && request.resource.data.estado == 'pendiente';
+      allow update: if isFuncionario();
+      allow delete: if isFuncionario()
+        || (signedIn() && resource.data.reportanteCorreo == myEmail());
+    }
+
+    // ---------- Chat ciudadano - funcionario ----------
+    match /chats/{chatId} {
+      allow read, write: if signedIn() && (chatId == myEmail() || isFuncionario());
+
+      match /mensajes/{mensajeId} {
+        allow read: if signedIn() && (chatId == myEmail() || isFuncionario());
+        allow create: if signedIn()
+          && ((chatId == myEmail() && request.resource.data.remitente == 'ciudadano')
+              || (isFuncionario() && request.resource.data.remitente == 'funcionario'));
+        allow update, delete: if false;
+      }
+    }
+  }
+}

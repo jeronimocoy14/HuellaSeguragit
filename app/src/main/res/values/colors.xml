@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="splash_background">#1E4A33</color>
+    <color name="splash_icon_background">#2F7A4E</color>
+    <color name="splash_text_primary">#FAF7F1</color>
+    <color name="splash_subtitle">#CBE2D2</color>
+    <color name="splash_footer">#A8CBB4</color>
+
+    <color name="brand_dark">@color/splash_background</color>
+    <color name="accent_green">@color/splash_icon_background</color>
+    <color name="surface_background">@color/splash_text_primary</color>
+
+    <color name="text_primary">#1F2A24</color>
+    <color name="text_secondary">#6B6459</color>
+    <color name="field_border">#E4DFD3</color>
+    <color name="field_placeholder">#9A9184</color>
+    <color name="link_color">#2C6FA6</color>
+    <color name="accent_soft">#E3EFE6</color>
+    <color name="offline_bg">#EFEAE0</color>
+
+    <color name="high_contrast_bg">#000000</color>
+    <color name="high_contrast_text">#FFFFFF</color>
+    <color name="high_contrast_accent">#FFD400</color>
+
+    <color name="danger_red">#B23B2E</color>
+    <color name="danger_red_soft">#F8E6E3</color>
+    <color name="danger_red_dark_text">#8A2E22</color>
+    <color name="disabled_btn_bg">#D8D2C2</color>
+    <color name="disabled_btn_text">#8A8272</color>
+    <color name="location_sent_text">#4C6B58</color>
+    <color name="map_placeholder_bg">#D2E5D8</color>
+    <color name="offline_notice_bg">#F3ECD9</color>
+    <color name="offline_notice_icon">#8A6A1E</color>
+    <color name="offline_notice_text">#7A5E19</color>
+</resources>

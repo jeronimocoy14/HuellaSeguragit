@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "420068152958",
+    "project_id": "huella-segura-396cb",
+    "storage_bucket": "huella-segura-396cb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:420068152958:android:30cc9475303c0eecb1aa2f",
+        "android_client_info": {
+          "package_name": "com.coy.huellasegura"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZmvDVkCGz6yfr-V8jx89_I9wTF24b-NA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

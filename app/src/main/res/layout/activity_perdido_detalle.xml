@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surface_background"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            android:alpha="0.35"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_paw" />
+
+        <ImageView
+            android:id="@+id/ivFoto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/accent_soft"
+            android:contentDescription="@null"
+            android:scaleType="centerCrop" />
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="top|start"
+            android:layout_margin="20dp"
+            android:background="@drawable/bg_icon_button"
+            android:contentDescription="@string/btn_atras"
+            android:padding="10dp"
+            android:src="@drawable/ic_arrow_back"
+            android:tint="@color/text_primary" />
+    </FrameLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tvNombre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="6dp"
+                android:text="@string/perdidos_detail_desc_label"
+                android:textColor="@color/text_secondary"
+                android:textSize="12.5sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card"
+                android:lineSpacingExtra="3dp"
+                android:padding="14dp"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvAviso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_note_box"
+            android:gravity="center"
+            android:padding="12dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="13.5sp"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEncontre"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:backgroundTint="@color/brand_dark"
+            android:text="@string/perdidos_btn_found"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:cornerRadius="14dp"
+            app:icon="@drawable/ic_check_circle"
+            app:iconGravity="textStart"
+            app:iconSize="20dp"
+            app:iconTint="@android:color/white" />
+    </LinearLayout>
+</LinearLayout>
