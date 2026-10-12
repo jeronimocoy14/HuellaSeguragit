@@ -64,6 +64,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun logout() {
         Firebase.auth.signOut()
+        AccessibilityPrefs.clearGuest(this)
         val intent = Intent(this, LoginActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }

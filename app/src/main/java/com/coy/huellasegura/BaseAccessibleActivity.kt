@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 open class BaseAccessibleActivity : AppCompatActivity() {
 
     override fun attachBaseContext(newBase: Context) {
-        val prefs = newBase.getSharedPreferences(AccessibilityConfigActivity.PREFS_NAME, MODE_PRIVATE)
+        val prefs = AccessibilityPrefs.of(newBase)
         val scale = prefs.getFloat(AccessibilityConfigActivity.KEY_FONT_SCALE, 1.15f)
         val config = Configuration(newBase.resources.configuration)
         config.fontScale = scale
@@ -15,10 +15,10 @@ open class BaseAccessibleActivity : AppCompatActivity() {
     }
 
     protected fun isHighContrastEnabled(): Boolean =
-        getSharedPreferences(AccessibilityConfigActivity.PREFS_NAME, MODE_PRIVATE)
+        AccessibilityPrefs.of(this)
             .getBoolean(AccessibilityConfigActivity.KEY_HIGH_CONTRAST, false)
 
     protected fun isTtsEnabled(): Boolean =
-        getSharedPreferences(AccessibilityConfigActivity.PREFS_NAME, MODE_PRIVATE)
+        AccessibilityPrefs.of(this)
             .getBoolean(AccessibilityConfigActivity.KEY_TTS, true)
 }

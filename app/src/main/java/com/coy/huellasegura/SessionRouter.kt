@@ -70,8 +70,11 @@ object SessionRouter {
     }
 
     private fun openCitizen(activity: Activity, email: String, name: String, age: Int?, direct: Boolean) {
-        val prefs = activity.getSharedPreferences(AccessibilityConfigActivity.PREFS_NAME, Activity.MODE_PRIVATE)
-        val intent = if (direct) {
+        AccessibilityPrefs.seedFromGuestIfNew(activity)
+        val prefs = AccessibilityPrefs.of(activity)
+        // La pantalla «Personaliza tu experiencia» se muestra solo la primera vez de cada cuenta.
+        val showConfig = !direct && !prefs.getBoolean(AccessibilityConfigActivity.KEY_ONBOARDING_DONE, false)
+        val intent = if (!showConfig) {
             val simplified = prefs.getBoolean(AccessibilityConfigActivity.KEY_SIMPLIFIED, false)
             Intent(activity, if (simplified) HomeSeniorActivity::class.java else MainDashboardActivity::class.java)
         } else {

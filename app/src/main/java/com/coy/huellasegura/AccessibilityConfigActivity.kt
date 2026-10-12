@@ -27,6 +27,7 @@ class AccessibilityConfigActivity : AppCompatActivity(), TextToSpeech.OnInitList
         const val KEY_TTS = "tts_enabled"
         const val KEY_DRAWINGS = "drawings_mode"
         const val KEY_SIMPLIFIED = "simplified_mode"
+        const val KEY_ONBOARDING_DONE = "onboarding_done"
         const val EXTRA_PROFESSIONAL_MODE = "extra_professional_mode"
 
         private const val SCALE_NORMAL = 1.0f
@@ -35,7 +36,7 @@ class AccessibilityConfigActivity : AppCompatActivity(), TextToSpeech.OnInitList
     }
 
     override fun attachBaseContext(newBase: Context) {
-        val prefs = newBase.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val prefs = AccessibilityPrefs.of(newBase)
         val scale = prefs.getFloat(KEY_FONT_SCALE, SCALE_LARGE)
         val config = Configuration(newBase.resources.configuration)
         config.fontScale = scale
@@ -57,7 +58,7 @@ class AccessibilityConfigActivity : AppCompatActivity(), TextToSpeech.OnInitList
         super.onCreate(savedInstanceState)
         binding = ActivityAccessibilityConfigBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        prefs = AccessibilityPrefs.of(this)
         userName = intent.getStringExtra(LoginActivity.EXTRA_USER_NAME) ?: "Usuario"
         userEmail = intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL)
         isProfessionalMode = intent.getBooleanExtra(EXTRA_PROFESSIONAL_MODE, false)
@@ -244,6 +245,12 @@ class AccessibilityConfigActivity : AppCompatActivity(), TextToSpeech.OnInitList
             finish()
             return
         }
+        // Abierta desde el login (sin sesión): solo se guardan las preferencias y se vuelve.
+        if (userEmail.isNullOrBlank()) {
+            finish()
+            return
+        }
+        prefs.edit().putBoolean(KEY_ONBOARDING_DONE, true).apply()
         val simplified = prefs.getBoolean(KEY_SIMPLIFIED, false)
         val destination = if (simplified) HomeSeniorActivity::class.java else MainDashboardActivity::class.java
         startActivity(Intent(this, destination).apply {

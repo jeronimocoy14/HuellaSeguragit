@@ -42,10 +42,7 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
 
         binding.tvToggleShift.setOnClickListener { toggleShift() }
 
-        val comingSoon = listOf(binding.tabInicio, binding.tabMisReportes)
-        comingSoon.forEach { view ->
-            view.setOnClickListener { Toast.makeText(this, R.string.coming_soon_feature, Toast.LENGTH_SHORT).show() }
-        }
+        binding.tabInicio.setOnClickListener { binding.scrollCases.smoothScrollTo(0, 0) }
 
         binding.tabChat.setOnClickListener {
             startActivity(Intent(this, ChatsFuncionarioActivity::class.java).apply {

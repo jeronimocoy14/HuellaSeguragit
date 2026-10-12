@@ -2,6 +2,7 @@ package com.coy.huellasegura
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
@@ -12,6 +13,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
 import android.view.View
+import com.google.firebase.auth.auth
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -81,6 +83,8 @@ class PerfilMascotaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPerfilMascotaBinding
     private lateinit var mascotaId: String
     private var vetMode = false
+    private var petName = ""
+    private var petDescription = ""
     private var mascotaDoc: DocumentSnapshot? = null
     private var mascotaListener: ListenerRegistration? = null
     private var historialListener: ListenerRegistration? = null
@@ -116,7 +120,14 @@ class PerfilMascotaActivity : AppCompatActivity() {
         binding.btnAddMedical.setOnClickListener { showRegistroDialog(null) }
         binding.tvAddBehavior.setOnClickListener { showAddBehaviorDialog() }
         binding.btnReportLost.setOnClickListener {
-            Toast.makeText(this, R.string.coming_soon_feature, Toast.LENGTH_SHORT).show()
+            val email = intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL)
+                ?: Firebase.auth.currentUser?.email.orEmpty()
+            startActivity(Intent(this, ReportarPerdidoActivity::class.java).apply {
+                putExtra(ReportarPerdidoActivity.EXTRA_PREFILL_NAME, petName)
+                putExtra(ReportarPerdidoActivity.EXTRA_PREFILL_DESC, petDescription)
+                putExtra(ProfileActivity.EXTRA_USER_EMAIL, email)
+                putExtra(LoginActivity.EXTRA_USER_NAME, intent.getStringExtra(LoginActivity.EXTRA_USER_NAME))
+            })
         }
 
         val mascotaRef = Firebase.firestore.collection("mascotas").document(mascotaId)
@@ -144,6 +155,8 @@ class PerfilMascotaActivity : AppCompatActivity() {
         val duenoCorreo = doc.getString("duenoCorreo").orEmpty()
 
         binding.tvNombre.text = nombre
+        petName = nombre
+        petDescription = listOf(especie, raza, edad).filter { it.isNotBlank() }.joinToString(", ")
         binding.ivHeaderIcon.setImageResource(
             when (especie) {
                 getString(R.string.pets_species_cat) -> R.drawable.ic_cat

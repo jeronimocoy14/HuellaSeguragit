@@ -64,6 +64,7 @@
     </LinearLayout>
 
     <ScrollView
+        android:id="@+id/scrollCases"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -266,7 +267,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/nav_home"
-                android:textColor="@color/field_placeholder"
+                android:textColor="@color/brand_dark"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -274,31 +275,9 @@
                 android:layout_width="22dp"
                 android:layout_height="3dp"
                 android:layout_marginTop="2dp"
-                android:background="@android:color/transparent" />
+                android:background="@color/brand_dark" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/tabMisReportes"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/professional_nav_my_reports"
-                android:textColor="@color/field_placeholder"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="22dp"
-                android:layout_height="3dp"
-                android:layout_marginTop="2dp"
-                android:background="@android:color/transparent" />
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/tabChat"
@@ -312,7 +291,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/nav_chat"
-                android:textColor="@color/brand_dark"
+                android:textColor="@color/field_placeholder"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -320,7 +299,7 @@
                 android:layout_width="22dp"
                 android:layout_height="3dp"
                 android:layout_marginTop="2dp"
-                android:background="@color/brand_dark" />
+                android:background="@android:color/transparent" />
         </LinearLayout>
 
         <LinearLayout

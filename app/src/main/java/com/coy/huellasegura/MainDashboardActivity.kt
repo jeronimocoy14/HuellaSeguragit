@@ -44,15 +44,20 @@ class MainDashboardActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListe
         binding.btnListen.setOnClickListener { readScreenAloud() }
 
         binding.btnAccessibility.setOnClickListener {
-            startActivity(Intent(this, AccessibilityConfigActivity::class.java))
+            startActivity(Intent(this, AccessibilityConfigActivity::class.java).apply {
+                putExtra(LoginActivity.EXTRA_USER_NAME, userName)
+                putExtra(ProfileActivity.EXTRA_USER_EMAIL, userEmail)
+            })
         }
 
-        binding.cardReport.setOnClickListener {
+        val openReport = View.OnClickListener {
             startActivity(Intent(this, ReportarPeligroActivity::class.java).apply {
                 putExtra(LoginActivity.EXTRA_USER_NAME, userName)
                 putExtra(ProfileActivity.EXTRA_USER_EMAIL, userEmail)
             })
         }
+        binding.cardReport.setOnClickListener(openReport)
+        binding.btnFab.setOnClickListener(openReport)
 
         binding.tabProfile.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java).apply {
@@ -95,13 +100,6 @@ class MainDashboardActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListe
         binding.cardMyReports.setOnClickListener(openMyReports)
         binding.tabReports.setOnClickListener(openMyReports)
         listenMyReportsCount(userEmail)
-
-        val placeholders = listOf(
-            binding.btnFilter, binding.cardNearby, binding.btnFab
-        )
-        placeholders.forEach { view ->
-            view.setOnClickListener { Toast.makeText(this, R.string.coming_soon_feature, Toast.LENGTH_SHORT).show() }
-        }
     }
 
     private fun listenMyReportsCount(email: String?) {
@@ -127,7 +125,7 @@ class MainDashboardActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListe
         binding.root.setBackgroundColor(bg)
         binding.tvUserName.setTextColor(text)
 
-        listOf(binding.cardLostFound, binding.cardChatVet.getChildAt(0) as View, binding.cardMyReports, binding.cardMyPets, binding.cardNearby)
+        listOf(binding.cardLostFound, binding.cardChatVet.getChildAt(0) as View, binding.cardMyReports, binding.cardMyPets)
             .forEach { card ->
                 (card.background?.mutate() as? GradientDrawable)?.apply {
                     setColor(bg)

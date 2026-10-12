@@ -20,7 +20,6 @@
     <string name="offline_banner">Puedes usar la app sin internet. Se sincroniza sola cuando vuelva la señal.</string>
     <string name="error_terms">Debes aceptar los Términos y condiciones para continuar.</string>
     <string name="error_credentials">Correo o contraseña incorrectos.</string>
-    <string name="coming_soon">Función disponible próximamente.</string>
 
     <string name="accessibility_header">Personaliza tu experiencia</string>
     <string name="accessibility_description">Elige lo que te ayude a usar la app más fácil. Puedes cambiar esto cuando quieras desde Ajustes.</string>
@@ -51,14 +50,10 @@
     <string name="dashboard_my_reports_subtitle">3 en seguimiento</string>
     <string name="dashboard_my_pets_title">Mis mascotas</string>
     <string name="dashboard_my_pets_subtitle">Ver mis animales</string>
-    <string name="dashboard_nearby_title">Cerca de ti</string>
-    <string name="dashboard_nearby_item_title">Animal comunitario · Villa Nueva</string>
-    <string name="dashboard_nearby_item_subtitle">Reportado hace 3 horas</string>
     <string name="nav_home">Inicio</string>
     <string name="nav_reports">Reportes</string>
     <string name="nav_chat">Chat</string>
     <string name="nav_profile">Perfil</string>
-    <string name="coming_soon_feature">Esta función estará disponible próximamente.</string>
 
     <string name="senior_hello">Hola, %1$s</string>
     <string name="senior_mode_active">Modo simplificado activado</string>
@@ -150,7 +145,6 @@
     <string name="time_hours_ago">Hace %1$d h</string>
     <string name="time_days_ago">Hace %1$d d</string>
     <string name="professional_footer_note">Al terminar el turno, transferir los casos abiertos al equipo disponible.</string>
-    <string name="professional_nav_my_reports">Mis reportes</string>
     <string name="professional_nav_settings">Ajustes</string>
 
     <string name="profile_title">Mi perfil</string>
@@ -368,4 +362,6 @@
     <string name="professional_no_location">Sin ubicación</string>
     <string name="report_photo_prepare_error">No se pudo preparar la foto. Vuelve a tomarla e inténtalo de nuevo.</string>
     <string name="btn_close">Cerrar</string>
+    <string name="terms_dialog_title">Términos y condiciones</string>
+    <string name="terms_summary">Resumen de uso y de tus datos (no reemplaza el texto legal de la Alcaldía).\n\n• Huella Segura es una herramienta de la Alcaldía de Zipaquirá para el bienestar animal.\n• Guardamos tu nombre, correo y fecha de nacimiento, y lo que envías: reportes con foto y ubicación, mensajes del chat y solicitudes de perdidos y encontrados.\n• Los funcionarios y veterinarios de la Alcaldía ven esa información para atender tus casos.\n• Un animal perdido o encontrado que publiques lo ven otros ciudadanos solo después de que un funcionario lo apruebe.\n• Envía reportes verdaderos y no subas fotos de personas ni datos de terceros.</string>
 </resources>

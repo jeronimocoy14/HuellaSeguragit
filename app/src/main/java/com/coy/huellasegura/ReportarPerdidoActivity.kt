@@ -24,6 +24,11 @@ import java.util.Locale
 
 class ReportarPerdidoActivity : BaseAccessibleActivity() {
 
+    companion object {
+        const val EXTRA_PREFILL_NAME = "extra_prefill_name"
+        const val EXTRA_PREFILL_DESC = "extra_prefill_desc"
+    }
+
     private lateinit var binding: ActivityReportarPerdidoBinding
     private var photoBase64: String? = null
     private var pendingUri: Uri? = null
@@ -50,6 +55,9 @@ class ReportarPerdidoActivity : BaseAccessibleActivity() {
             v.setPadding(bars.left, bars.top, bars.right, maxOf(bars.bottom, ime.bottom))
             insets
         }
+
+        intent.getStringExtra(EXTRA_PREFILL_NAME)?.let { binding.etNombre.setText(it) }
+        intent.getStringExtra(EXTRA_PREFILL_DESC)?.let { binding.etDesc.setText(it) }
 
         binding.btnBack.setOnClickListener { finish() }
         binding.photoBox.setOnClickListener { chooseSource() }

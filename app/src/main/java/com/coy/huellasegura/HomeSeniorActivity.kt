@@ -37,7 +37,10 @@ class HomeSeniorActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListener
         if (isTtsEnabled()) tts = TextToSpeech(this, this)
 
         binding.btnAccessibility.setOnClickListener {
-            startActivity(Intent(this, AccessibilityConfigActivity::class.java))
+            startActivity(Intent(this, AccessibilityConfigActivity::class.java).apply {
+                putExtra(LoginActivity.EXTRA_USER_NAME, intent.getStringExtra(LoginActivity.EXTRA_USER_NAME))
+                putExtra(ProfileActivity.EXTRA_USER_EMAIL, intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL))
+            })
         }
 
         binding.btnProfile.setOnClickListener {

@@ -199,7 +199,11 @@ class LoginActivity : AppCompatActivity() {
             spannable.setSpan(StyleSpan(android.graphics.Typeface.BOLD), start, start + target.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             spannable.setSpan(object : ClickableSpan() {
                 override fun onClick(widget: View) {
-                    Toast.makeText(this@LoginActivity, getString(R.string.coming_soon), Toast.LENGTH_SHORT).show()
+                    styledDialog()
+                        .setTitle(R.string.terms_dialog_title)
+                        .setMessage(R.string.terms_summary)
+                        .setPositiveButton(R.string.btn_close, null)
+                        .show()
                 }
             }, start, start + target.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
