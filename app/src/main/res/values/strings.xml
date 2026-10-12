@@ -364,4 +364,8 @@
     <string name="btn_close">Cerrar</string>
     <string name="terms_dialog_title">Términos y condiciones</string>
     <string name="terms_summary">Resumen de uso y de tus datos (no reemplaza el texto legal de la Alcaldía).\n\n• Huella Segura es una herramienta de la Alcaldía de Zipaquirá para el bienestar animal.\n• Guardamos tu nombre, correo y fecha de nacimiento, y lo que envías: reportes con foto y ubicación, mensajes del chat y solicitudes de perdidos y encontrados.\n• Los funcionarios y veterinarios de la Alcaldía ven esa información para atender tus casos.\n• Un animal perdido o encontrado que publiques lo ven otros ciudadanos solo después de que un funcionario lo apruebe.\n• Envía reportes verdaderos y no subas fotos de personas ni datos de terceros.</string>
+    <string name="professional_resolve_confirm_title">¿Marcar como resuelto?</string>
+    <string name="professional_resolve_confirm_message">El caso «%1$s» saldrá de tu lista de casos en atención. Podrás deshacerlo unos segundos después.</string>
+    <string name="professional_case_reopened">Caso devuelto a «en atención»</string>
+    <string name="btn_deshacer">Deshacer</string>
 </resources>

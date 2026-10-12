@@ -12,6 +12,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import com.coy.huellasegura.databinding.ActivityBandejaProfesionalBinding
 import com.coy.huellasegura.databinding.ItemProfessionalCaseBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ListenerRegistration
@@ -158,7 +159,7 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
             item.btnCaseAction.setTextColor(ContextCompat.getColor(this, R.color.text_primary))
             item.btnCaseAction.strokeWidth = dp(1.5f)
             item.btnCaseAction.setStrokeColorResource(R.color.field_border)
-            item.btnCaseAction.setOnClickListener { resolveCase(doc) }
+            item.btnCaseAction.setOnClickListener { confirmResolve(doc) }
         }
 
         val reporterEmail = doc.getString("reportanteCorreo").orEmpty()
@@ -190,6 +191,17 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
             .show()
     }
 
+    /** Resolver saca el caso de la lista, así que se pide confirmación antes. */
+    private fun confirmResolve(doc: DocumentSnapshot) {
+        val tipo = doc.getString("tipo").orEmpty().ifBlank { getString(R.string.report_type_other) }
+        styledDialog()
+            .setTitle(R.string.professional_resolve_confirm_title)
+            .setMessage(getString(R.string.professional_resolve_confirm_message, tipo))
+            .setNegativeButton(R.string.btn_cancelar, null)
+            .setPositiveButton(R.string.professional_btn_resolve) { _, _ -> resolveCase(doc) }
+            .show()
+    }
+
     private fun resolveCase(doc: DocumentSnapshot) {
         doc.reference.update(
             mapOf(
@@ -198,7 +210,26 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
             )
         )
             .addOnSuccessListener {
-                Toast.makeText(this, R.string.professional_case_resolved, Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, R.string.professional_case_resolved, 6000)
+                    .setAction(R.string.btn_deshacer) { undoResolve(doc) }
+                    .setActionTextColor(ContextCompat.getColor(this, R.color.surface_background))
+                    .show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, R.string.report_send_error, Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    /** Devuelve el caso a «en atención» (conserva quién lo atendía). */
+    private fun undoResolve(doc: DocumentSnapshot) {
+        doc.reference.update(
+            mapOf(
+                "estado" to "en_atencion",
+                "fechaResolucion" to com.google.firebase.firestore.FieldValue.delete()
+            )
+        )
+            .addOnSuccessListener {
+                Toast.makeText(this, R.string.professional_case_reopened, Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
                 Toast.makeText(this, R.string.report_send_error, Toast.LENGTH_SHORT).show()
