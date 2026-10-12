@@ -31,6 +31,7 @@ class HomeSeniorActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListener
 
         val userName = intent.getStringExtra(LoginActivity.EXTRA_USER_NAME) ?: "Usuario"
         val userEmail = intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL)
+        pendingBanner = PendingBanner(this, binding.pendingBanner, userEmail.orEmpty().trim().lowercase()).also { it.start() }
         binding.tvHello.text = getString(R.string.senior_hello, userName)
 
         binding.btnReadAloud.visibility = if (isTtsEnabled()) android.view.View.VISIBLE else android.view.View.GONE
@@ -107,7 +108,10 @@ class HomeSeniorActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListener
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
     }
 
+    private var pendingBanner: PendingBanner? = null
+
     override fun onDestroy() {
+        pendingBanner?.stop()
         tts?.stop()
         tts?.shutdown()
         super.onDestroy()

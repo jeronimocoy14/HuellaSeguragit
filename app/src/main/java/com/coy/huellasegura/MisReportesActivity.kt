@@ -16,6 +16,7 @@ import com.coy.huellasegura.databinding.ItemMiReporteBinding
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.MetadataChanges
 import com.google.firebase.firestore.firestore
 
 class MisReportesActivity : BaseAccessibleActivity() {
@@ -49,7 +50,7 @@ class MisReportesActivity : BaseAccessibleActivity() {
         binding.listContainer.showStatusMessage(getString(R.string.list_loading))
         listener = Firebase.firestore.collection("reportes")
             .whereEqualTo("reportanteCorreo", userEmail)
-            .addSnapshotListener { snapshot, error ->
+            .addSnapshotListener(MetadataChanges.INCLUDE) { snapshot, error ->
                 if (error != null && snapshot == null) {
                     binding.listContainer.showStatusMessage(getString(R.string.list_error))
                     return@addSnapshotListener
@@ -125,11 +126,13 @@ class MisReportesActivity : BaseAccessibleActivity() {
         item.tvSubtitulo.ellipsize = android.text.TextUtils.TruncateAt.END
         item.tvSubtitulo.text = listOf(place, time).filter { it.isNotBlank() }.joinToString(" · ")
 
-        item.tvPill.setText(label)
-        item.tvPill.setBackgroundResource(pillBg)
-        item.tvPill.setTextColor(ContextCompat.getColor(this, pillText))
+        // Escrito sin internet y aún sin confirmar por el servidor.
+        val unsent = doc.metadata.hasPendingWrites()
+        item.tvPill.setText(if (unsent) R.string.reports_status_unsent else label)
+        item.tvPill.setBackgroundResource(if (unsent) R.drawable.bg_pill_pending else pillBg)
+        item.tvPill.setTextColor(ContextCompat.getColor(this, if (unsent) R.color.offline_notice_text else pillText))
         item.tvDetalle.visibility = View.VISIBLE
-        item.tvDetalle.setText(detail)
+        item.tvDetalle.setText(if (unsent) R.string.reports_detail_unsent else detail)
 
         if (estado == "en_atencion" || estado == "resuelto") {
             item.btnChat.visibility = View.VISIBLE

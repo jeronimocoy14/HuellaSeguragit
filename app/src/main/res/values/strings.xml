@@ -382,4 +382,16 @@
     <string name="perdidos_queued">Solicitud guardada. Se enviará cuando vuelvas a tener señal.</string>
     <string name="perdidos_found_queued">Aviso guardado. Se enviará cuando vuelvas a tener señal.</string>
     <string name="pets_queued">Mascota guardada. Se enviará cuando vuelvas a tener señal.</string>
+    <plurals name="pending_banner_title">
+        <item quantity="one">Tienes %d envío pendiente</item>
+        <item quantity="other">Tienes %d envíos pendientes</item>
+    </plurals>
+    <string name="pending_banner_subtitle">Están guardados en tu teléfono y se enviarán solos cuando haya señal.</string>
+    <string name="pending_banner_send_now">Enviar ahora</string>
+    <string name="pending_banner_sending">Enviando…</string>
+    <string name="pending_banner_sent">Listo: se enviaron tus reportes.</string>
+    <string name="pending_banner_no_internet">Sin conexión. Se enviarán solos cuando vuelva la señal.</string>
+    <string name="pending_banner_failed">Aún no se pudo enviar. Lo intentaremos solos en cuanto sea posible.</string>
+    <string name="reports_status_unsent">Sin enviar</string>
+    <string name="reports_detail_unsent">Está guardado en tu teléfono y se enviará cuando haya señal.</string>
 </resources>

@@ -84,13 +84,13 @@
         android:insetBottom="0dp"
         android:text="@string/reports_btn_chat"
         android:textAllCaps="false"
-        android:textColor="@color/link_color"
+        android:textColor="@color/brand_dark"
         android:textSize="13.5sp"
         android:visibility="gone"
         app:cornerRadius="12dp"
         app:icon="@drawable/ic_chat"
         app:iconGravity="textStart"
         app:iconSize="18dp"
-        app:iconTint="@color/link_color"
+        app:iconTint="@color/brand_dark"
         app:strokeColor="@color/field_border" />
 </LinearLayout>
