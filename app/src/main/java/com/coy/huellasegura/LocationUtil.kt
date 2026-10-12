@@ -9,17 +9,21 @@ import android.location.LocationManager
 import android.os.CancellationSignal
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import androidx.core.content.ContextCompat
 
 object LocationUtil {
+
+    private const val MAX_AGE_MS = 120_000L
 
     fun hasPermission(context: Context): Boolean =
         ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
             PackageManager.PERMISSION_GRANTED
 
     /**
-     * Pide una ubicación actual (GPS o red). Si no llega a tiempo usa la última conocida; si no hay
-     * ninguna, entrega null. Siempre responde en el hilo principal.
+     * Pide una ubicación actual (GPS o red). Si no llega a tiempo usa la última conocida solo si es
+     * reciente (menos de [MAX_AGE_MS]); una ubicación vieja podría mandar a alguien al lugar equivocado.
+     * Si no hay ninguna válida, entrega null. Siempre responde en el hilo principal.
      */
     @SuppressLint("MissingPermission")
     fun getCurrent(context: Context, timeoutMs: Long = 10_000, onResult: (Location?) -> Unit) {
@@ -55,5 +59,7 @@ object LocationUtil {
 
     @SuppressLint("MissingPermission")
     private fun lastKnown(manager: LocationManager, providers: List<String>): Location? =
-        providers.mapNotNull { runCatching { manager.getLastKnownLocation(it) }.getOrNull() }.maxByOrNull { it.time }
+        providers.mapNotNull { runCatching { manager.getLastKnownLocation(it) }.getOrNull() }
+            .filter { SystemClock.elapsedRealtime() - it.elapsedRealtimeNanos / 1_000_000 <= MAX_AGE_MS }
+            .maxByOrNull { it.time }
 }
