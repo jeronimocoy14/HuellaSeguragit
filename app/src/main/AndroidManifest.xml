@@ -102,6 +102,9 @@
         <activity
             android:name=".MisReportesActivity"
             android:exported="false" />
+        <activity
+            android:name=".CasosResueltosActivity"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

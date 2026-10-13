@@ -25,6 +25,7 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
     private var onShift = true
     private var casesListener: ListenerRegistration? = null
     private var perdidosListener: ListenerRegistration? = null
+    private var resolvedListener: ListenerRegistration? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +59,13 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
         }
         listenForPerdidos()
 
+        binding.cardResueltos.setOnClickListener {
+            startActivity(Intent(this, CasosResueltosActivity::class.java).apply {
+                putExtra(ProfileActivity.EXTRA_USER_EMAIL, intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL))
+            })
+        }
+        listenForResolved()
+
         binding.tabAjustes.setOnClickListener { openAccessibilitySettings() }
 
         listenForCases()
@@ -84,6 +92,16 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
                 binding.tvPerdidosCount.text = if (count == 0) getString(R.string.perdidos_inbox_none)
                 else getString(R.string.perdidos_inbox_count, count)
                 binding.dotPerdidos.visibility = if (count == 0) View.INVISIBLE else View.VISIBLE
+            }
+    }
+
+    private fun listenForResolved() {
+        resolvedListener = Firebase.firestore.collection("reportes")
+            .whereEqualTo("estado", "resuelto")
+            .addSnapshotListener { snapshot, _ ->
+                val count = snapshot?.size() ?: 0
+                binding.tvResueltosCount.text = if (count == 0) getString(R.string.resolved_inbox_none)
+                else resources.getQuantityString(R.plurals.resolved_inbox_count, count, count)
             }
     }
 
@@ -115,37 +133,7 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
 
         val tipo = doc.getString("tipo").orEmpty().ifBlank { getString(R.string.report_type_other) }
         val prefix = getString(if (isPending) R.string.professional_case_new_prefix else R.string.professional_case_active_prefix)
-        item.tvCaseTitle.text = "$prefix · $tipo"
-
-        val lat = doc.getDouble("lat")
-        val lon = doc.getDouble("lon")
-        val hasCoordinates = lat != null && lon != null
-        val reference = doc.getString("referencia").orEmpty()
-        val address = doc.getString("direccion").orEmpty()
-        val place = when {
-            address.isNotBlank() -> address
-            reference.isNotBlank() -> reference
-            hasCoordinates -> getString(R.string.professional_location_gps, GeoUtil.formatCoordinates(lat!!, lon!!))
-            else -> getString(R.string.professional_no_location)
-        }
-        val timeText = doc.getTimestamp("fechaCreacion")?.let { relativeTime(it.toDate().time) }.orEmpty()
-        item.tvCaseSubtitle.text = listOf(place, timeText).filter { it.isNotBlank() }.joinToString(" · ")
-
-        if (hasCoordinates) {
-            item.btnCaseMap.visibility = View.VISIBLE
-            item.btnCaseMap.setOnClickListener {
-                runCatching {
-                    startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse(GeoUtil.mapsUrl(lat!!, lon!!))))
-                }.onFailure { Toast.makeText(this, R.string.report_send_error, Toast.LENGTH_SHORT).show() }
-            }
-        }
-
-        val photo = PhotoUtil.decode(doc.getString("fotoBase64"), doc.id)
-        if (photo != null) {
-            item.ivCasePhoto.visibility = View.VISIBLE
-            item.ivCasePhoto.setImageBitmap(photo)
-            item.ivCasePhoto.setOnClickListener { showEvidence(photo) }
-        }
+        CaseCard.bind(this, item, doc, "$prefix · $tipo", intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL))
 
         if (isPending) {
             item.btnCaseAction.text = getString(R.string.professional_btn_take_case)
@@ -162,33 +150,7 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
             item.btnCaseAction.setOnClickListener { confirmResolve(doc) }
         }
 
-        val reporterEmail = doc.getString("reportanteCorreo").orEmpty()
-        if (reporterEmail.isNotBlank()) {
-            item.btnCaseChat.visibility = View.VISIBLE
-            item.btnCaseChat.setOnClickListener {
-                startActivity(Intent(this, ChatActivity::class.java).apply {
-                    putExtra(ChatActivity.EXTRA_CHAT_ID, reporterEmail)
-                    putExtra(ChatActivity.EXTRA_ROLE, ChatActivity.ROLE_FUNCIONARIO)
-                    putExtra(ChatActivity.EXTRA_PEER_NAME, doc.getString("reportanteNombre").orEmpty())
-                    putExtra(ProfileActivity.EXTRA_USER_EMAIL, intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL))
-                })
-            }
-        }
-
         binding.casesContainer.addView(item.root)
-    }
-
-    private fun showEvidence(photo: android.graphics.Bitmap) {
-        val view = android.widget.ImageView(this).apply {
-            setImageBitmap(photo)
-            adjustViewBounds = true
-            setPadding(dp(8f), dp(8f), dp(8f), dp(8f))
-        }
-        styledDialog()
-            .setTitle(R.string.professional_evidence_title)
-            .setView(view)
-            .setPositiveButton(R.string.btn_close, null)
-            .show()
     }
 
     /** Resolver saca el caso de la lista, así que se pide confirmación antes. */
@@ -256,16 +218,6 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
         }
     }
 
-    private fun relativeTime(epochMillis: Long): String {
-        val minutes = (System.currentTimeMillis() - epochMillis) / 60000
-        return when {
-            minutes < 1 -> getString(R.string.time_just_now)
-            minutes < 60 -> getString(R.string.time_minutes_ago, minutes.toInt())
-            minutes < 60 * 24 -> getString(R.string.time_hours_ago, (minutes / 60).toInt())
-            else -> getString(R.string.time_days_ago, (minutes / (60 * 24)).toInt())
-        }
-    }
-
     private fun dp(value: Float): Int = (value * resources.displayMetrics.density).toInt()
 
     private fun openAccessibilitySettings() {
@@ -297,6 +249,7 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
     override fun onDestroy() {
         casesListener?.remove()
         perdidosListener?.remove()
+        resolvedListener?.remove()
         super.onDestroy()
     }
 }

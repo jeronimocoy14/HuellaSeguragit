@@ -413,4 +413,22 @@
     <string name="news_subtitle_many">Toca «Ver» para revisarlas.</string>
     <string name="news_btn_view">Ver</string>
     <string name="news_btn_close">Cerrar</string>
+    <string name="resolved_inbox_title">Casos resueltos</string>
+    <plurals name="resolved_inbox_count">
+        <item quantity="one">%d resuelto</item>
+        <item quantity="other">%d resueltos</item>
+    </plurals>
+    <string name="resolved_inbox_none">Aún no hay casos resueltos</string>
+    <string name="resolved_title">Casos resueltos</string>
+    <plurals name="resolved_count">
+        <item quantity="one">%d caso, del más reciente al más antiguo</item>
+        <item quantity="other">%d casos, del más reciente al más antiguo</item>
+    </plurals>
+    <string name="resolved_empty">Aún no hay casos resueltos.</string>
+    <string name="resolved_prefix">Resuelto</string>
+    <string name="resolved_when">Resuelto: %1$s</string>
+    <string name="resolved_by">Atendido por %1$s</string>
+    <string name="resolved_btn_reopen">Reabrir caso</string>
+    <string name="resolved_reopen_title">¿Reabrir este caso?</string>
+    <string name="resolved_reopen_message">El caso «%1$s» volverá a «en atención».</string>
 </resources>
