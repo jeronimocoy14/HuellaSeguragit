@@ -66,6 +66,10 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
         }
         listenForResolved()
 
+        binding.cardEstadisticas.setOnClickListener {
+            startActivity(Intent(this, EstadisticasActivity::class.java))
+        }
+
         binding.tabAjustes.setOnClickListener { openAccessibilitySettings() }
 
         listenForCases()
@@ -209,7 +213,8 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
             doc.reference.update(
                 mapOf(
                     "estado" to "en_atencion",
-                    "atendidoPor" to intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL).orEmpty()
+                    "atendidoPor" to intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL).orEmpty(),
+                    "fechaAtencion" to com.google.firebase.firestore.FieldValue.serverTimestamp()
                 )
             ),
             R.string.professional_case_taken_queued

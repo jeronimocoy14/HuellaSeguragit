@@ -444,4 +444,33 @@
     <string name="resolved_clear_filters">Limpiar filtros</string>
     <string name="resolved_more_hint">Se muestran los %1$d más recientes. Usa el buscador o los filtros para ver otros.</string>
     <string name="resolved_reported_by">Reportó %1$s</string>
+    <string name="stats_inbox_title">Estadísticas</string>
+    <string name="stats_inbox_subtitle">Reportes por tipo, por semana y tiempos de atención</string>
+    <string name="stats_title">Estadísticas</string>
+    <string name="stats_subtitle">Resumen de los reportes</string>
+    <string name="stats_period_all">Todo</string>
+    <string name="stats_kpi_total">Reportes</string>
+    <string name="stats_total_sub">%1$d sin atender · %2$d en atención</string>
+    <string name="stats_kpi_resolved">Resueltos</string>
+    <string name="stats_resolved_sub">%1$d %% del total</string>
+    <string name="stats_kpi_take_time">Tiempo hasta tomar el caso</string>
+    <string name="stats_kpi_resolve_time">Tiempo hasta resolverlo</string>
+    <string name="stats_no_data">Sin datos</string>
+    <string name="stats_take_time_empty">Se empieza a registrar con los casos que se tomen desde ahora</string>
+    <string name="stats_resolve_time_empty">Aún no hay casos resueltos</string>
+    <plurals name="stats_based_on">
+        <item quantity="one">promedio de %1$d caso</item>
+        <item quantity="other">promedio de %1$d casos</item>
+    </plurals>
+    <string name="stats_by_type">Reportes por tipo</string>
+    <string name="stats_by_week">Reportes por semana</string>
+    <string name="stats_by_week_note">Últimas 8 semanas, de lunes a domingo. La última barra es la semana en curso.</string>
+    <string name="stats_empty">No hay reportes en este periodo.</string>
+    <string name="stats_footnote">El periodo elegido arriba aplica a los totales, los tiempos y los tipos. Los tiempos se cuentan desde que se crea el reporte.</string>
+    <string name="stats_duration_lt_min">menos de 1 min</string>
+    <string name="stats_duration_min">%1$d min</string>
+    <string name="stats_duration_h">%1$d h</string>
+    <string name="stats_duration_h_min">%1$d h %2$d min</string>
+    <string name="stats_duration_d">%1$d d</string>
+    <string name="stats_duration_d_h">%1$d d %2$d h</string>
 </resources>
