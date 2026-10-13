@@ -431,4 +431,17 @@
     <string name="resolved_btn_reopen">Reabrir caso</string>
     <string name="resolved_reopen_title">¿Reabrir este caso?</string>
     <string name="resolved_reopen_message">El caso «%1$s» volverá a «en atención».</string>
+    <string name="resolved_search_hint">Buscar por persona, tipo o lugar</string>
+    <string name="resolved_filter_all">Todos</string>
+    <string name="resolved_filter_found">Avisos de perdidos</string>
+    <string name="resolved_filter_mine">Atendidos por mí</string>
+    <string name="resolved_period_all">Siempre</string>
+    <string name="resolved_period_today">Hoy</string>
+    <string name="resolved_period_7">7 días</string>
+    <string name="resolved_period_30">30 días</string>
+    <string name="resolved_count_filtered">%1$d de %2$d casos</string>
+    <string name="resolved_no_match">Ningún caso coincide con la búsqueda o los filtros.</string>
+    <string name="resolved_clear_filters">Limpiar filtros</string>
+    <string name="resolved_more_hint">Se muestran los %1$d más recientes. Usa el buscador o los filtros para ver otros.</string>
+    <string name="resolved_reported_by">Reportó %1$s</string>
 </resources>

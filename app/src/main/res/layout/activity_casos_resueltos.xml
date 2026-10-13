@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -49,6 +50,218 @@
                 android:textSize="12.5sp" />
         </LinearLayout>
     </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="20dp"
+        android:hint="@string/resolved_search_hint"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusTopStart="12dp"
+        app:endIconMode="clear_text">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionSearch"
+            android:inputType="textPersonName|textNoSuggestions"
+            android:maxLines="1"
+            android:singleLine="true" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:scrollbars="none">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:selectionRequired="true"
+            app:singleLine="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTypeAll"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:checked="true"
+                android:text="@string/resolved_filter_all"
+                android:textColor="@color/chip_filter_text"
+                android:textSize="13sp"
+                app:chipBackgroundColor="@color/chip_filter_bg"
+                app:chipStrokeColor="@color/field_border"
+                app:chipStrokeWidth="1.5dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTypeHurt"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="@string/report_type_hurt"
+                android:textColor="@color/chip_filter_text"
+                android:textSize="13sp"
+                app:chipBackgroundColor="@color/chip_filter_bg"
+                app:chipStrokeColor="@color/field_border"
+                app:chipStrokeWidth="1.5dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTypeAbuse"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="@string/report_type_abuse"
+                android:textColor="@color/chip_filter_text"
+                android:textSize="13sp"
+                app:chipBackgroundColor="@color/chip_filter_bg"
+                app:chipStrokeColor="@color/field_border"
+                app:chipStrokeWidth="1.5dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTypeHit"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="@string/report_type_hit"
+                android:textColor="@color/chip_filter_text"
+                android:textSize="13sp"
+                app:chipBackgroundColor="@color/chip_filter_bg"
+                app:chipStrokeColor="@color/field_border"
+                app:chipStrokeWidth="1.5dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTypeOther"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="@string/report_type_other"
+                android:textColor="@color/chip_filter_text"
+                android:textSize="13sp"
+                app:chipBackgroundColor="@color/chip_filter_bg"
+                app:chipStrokeColor="@color/field_border"
+                app:chipStrokeWidth="1.5dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTypeFound"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="@string/resolved_filter_found"
+                android:textColor="@color/chip_filter_text"
+                android:textSize="13sp"
+                app:chipBackgroundColor="@color/chip_filter_bg"
+                app:chipStrokeColor="@color/field_border"
+                app:chipStrokeWidth="1.5dp" />
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupPeriod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:selectionRequired="true"
+                app:singleLine="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipPeriodAll"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="@string/resolved_period_all"
+                    android:textColor="@color/chip_filter_text"
+                    android:textSize="13sp"
+                    app:chipBackgroundColor="@color/chip_filter_bg"
+                    app:chipStrokeColor="@color/field_border"
+                    app:chipStrokeWidth="1.5dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipPeriodToday"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="@string/resolved_period_today"
+                    android:textColor="@color/chip_filter_text"
+                    android:textSize="13sp"
+                    app:chipBackgroundColor="@color/chip_filter_bg"
+                    app:chipStrokeColor="@color/field_border"
+                    app:chipStrokeWidth="1.5dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipPeriod7"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="@string/resolved_period_7"
+                    android:textColor="@color/chip_filter_text"
+                    android:textSize="13sp"
+                    app:chipBackgroundColor="@color/chip_filter_bg"
+                    app:chipStrokeColor="@color/field_border"
+                    app:chipStrokeWidth="1.5dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipPeriod30"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="@string/resolved_period_30"
+                    android:textColor="@color/chip_filter_text"
+                    android:textSize="13sp"
+                    app:chipBackgroundColor="@color/chip_filter_bg"
+                    app:chipStrokeColor="@color/field_border"
+                    app:chipStrokeWidth="1.5dp" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipMine"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checkable="true"
+                android:text="@string/resolved_filter_mine"
+                android:textColor="@color/chip_filter_text"
+                android:textSize="13sp"
+                app:chipBackgroundColor="@color/chip_filter_bg"
+                app:chipStrokeColor="@color/field_border"
+                app:chipStrokeWidth="1.5dp" />
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <ScrollView
         android:layout_width="match_parent"
