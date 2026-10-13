@@ -16,3 +16,7 @@ local.properties
 
 .kotlin/
 /.idea/
+
+# Pruebas de reglas
+/tests/rules/node_modules/
+*-debug.log

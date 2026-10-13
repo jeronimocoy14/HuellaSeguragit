@@ -30,6 +30,25 @@ service cloud.firestore {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
     }
 
+    // Campos que solo escribe el personal al atender o moderar: un ciudadano no puede
+    // crear un documento que ya venga "atendido" o "revisado".
+    function sinCamposDePersonal() {
+      return !request.resource.data.keys().hasAny([
+        'atendidoPor', 'fechaResolucion', 'revisadoPor', 'fechaPublicacion',
+        'motivoRechazo', 'editadoPorFuncionario', 'editadoPor', 'descripcionOriginal'
+      ]);
+    }
+
+    // Un aviso "lo encontré" solo puede nombrar como dueño a quien de verdad publicó el animal.
+    function avisoValido() {
+      let d = request.resource.data;
+      return !('perdidoDuenoCorreo' in d)
+        || (('perdidoId' in d)
+            && exists(/databases/$(database)/documents/perdidos/$(d.perdidoId))
+            && get(/databases/$(database)/documents/perdidos/$(d.perdidoId)).data.reportanteCorreo
+                == d.perdidoDuenoCorreo);
+    }
+
     // ---------- Roles (solo se asignan desde la consola de Firebase) ----------
     match /roles_profesionales/{email} {
       allow read: if signedIn() && myEmail() == email;
@@ -48,8 +67,11 @@ service cloud.firestore {
       allow create: if isVet() && myEmail() == email
         && request.resource.data.estado == 'pendiente';
       // La comunidad revisa las solicitudes de otros veterinarios (nunca la propia).
-      allow update: if signedIn() && myEmail() != email && onlyChanges(['estado']);
-      allow delete: if signedIn() && myEmail() != email;
+      // Solo se puede aceptar una solicitud pendiente: nadie puede revertir ni borrar a un
+      // veterinario ya aceptado.
+      allow update: if signedIn() && myEmail() != email && onlyChanges(['estado'])
+        && resource.data.estado == 'pendiente' && request.resource.data.estado == 'aceptado';
+      allow delete: if signedIn() && myEmail() != email && resource.data.estado == 'pendiente';
     }
 
     // ---------- Mascotas ----------
@@ -89,7 +111,9 @@ service cloud.firestore {
         || (signedIn() && resource.data.perdidoDuenoCorreo == myEmail());
       allow create: if signedIn()
         && request.resource.data.reportanteCorreo == myEmail()
-        && request.resource.data.estado == 'pendiente';
+        && request.resource.data.estado == 'pendiente'
+        && sinCamposDePersonal()
+        && avisoValido();
       allow update: if isFuncionario();
       allow delete: if isFuncionario()
         || (signedIn() && resource.data.perdidoDuenoCorreo == myEmail());
@@ -102,7 +126,8 @@ service cloud.firestore {
         || (signedIn() && resource.data.estado == 'publicado');
       allow create: if signedIn()
         && request.resource.data.reportanteCorreo == myEmail()
-        && request.resource.data.estado == 'pendiente';
+        && request.resource.data.estado == 'pendiente'
+        && sinCamposDePersonal();
       allow update: if isFuncionario();
       allow delete: if isFuncionario()
         || (signedIn() && resource.data.reportanteCorreo == myEmail());
@@ -110,11 +135,14 @@ service cloud.firestore {
 
     // ---------- Chat ciudadano - funcionario ----------
     match /chats/{chatId} {
-      allow read, write: if signedIn() && (chatId == myEmail() || isFuncionario());
+      allow read, create, update: if signedIn() && (chatId == myEmail() || isFuncionario());
+      allow delete: if false;
 
       match /mensajes/{mensajeId} {
         allow read: if signedIn() && (chatId == myEmail() || isFuncionario());
+        // El mensaje debe ir firmado con el correo de quien lo envía.
         allow create: if signedIn()
+          && request.resource.data.remitenteCorreo.lower() == myEmail()
           && ((chatId == myEmail() && request.resource.data.remitente == 'ciudadano')
               || (isFuncionario() && request.resource.data.remitente == 'funcionario'));
         allow update, delete: if false;

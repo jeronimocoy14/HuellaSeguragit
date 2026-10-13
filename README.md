@@ -36,6 +36,14 @@ El APK queda en `app/build/outputs/apk/debug/app-debug.apk`. El archivo `app/goo
 
 Están en [`firestore.rules`](firestore.rules). Se publican desde la consola de Firebase (Firestore → Reglas). Resumen: cada ciudadano solo lee y escribe lo suyo; los veterinarios ven las mascotas; los funcionarios ven reportes y chats; los roles no se pueden escribir desde la app.
 
+Pruebas de las reglas (se ejecutan contra el emulador de Firestore, hace falta Java y Node):
+
+```
+cd tests/rules
+npm install
+npm test
+```
+
 ## Cuentas de prueba
 
 No hay cuentas de prueba en el repositorio. Para probar los roles profesionales, crea la cuenta desde la app y agrega su correo (en minúsculas) en `roles_profesionales` con el campo `rol`.
