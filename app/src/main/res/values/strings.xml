@@ -400,4 +400,17 @@
     <string name="professional_case_taken_queued">Caso tomado. Se enviará cuando vuelvas a tener señal.</string>
     <string name="professional_case_resolved_queued">Caso resuelto. Se enviará cuando vuelvas a tener señal.</string>
     <string name="professional_case_reopened_queued">Caso devuelto a «en atención». Se enviará cuando vuelvas a tener señal.</string>
+    <string name="news_report_taken">Un funcionario tomó tu reporte de «%1$s»</string>
+    <string name="news_report_resolved">Tu reporte de «%1$s» fue resuelto</string>
+    <string name="news_found_taken">Un funcionario recibió tu aviso sobre «%1$s»</string>
+    <string name="news_found_resolved">Tu aviso sobre «%1$s» fue atendido</string>
+    <string name="news_lost_published">Tu solicitud de «%1$s» fue publicada</string>
+    <string name="news_lost_rejected">Tu solicitud de «%1$s» fue rechazada</string>
+    <plurals name="news_title_many">
+        <item quantity="one">Tienes %d novedad en tus reportes</item>
+        <item quantity="other">Tienes %d novedades en tus reportes</item>
+    </plurals>
+    <string name="news_subtitle_many">Toca «Ver» para revisarlas.</string>
+    <string name="news_btn_view">Ver</string>
+    <string name="news_btn_close">Cerrar</string>
 </resources>

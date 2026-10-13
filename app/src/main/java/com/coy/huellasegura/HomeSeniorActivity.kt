@@ -31,6 +31,13 @@ class HomeSeniorActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListener
 
         val userName = intent.getStringExtra(LoginActivity.EXTRA_USER_NAME) ?: "Usuario"
         val userEmail = intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL)
+        statusNews = StatusNews(this, binding.newsBanner, userEmail.orEmpty().trim().lowercase()) { kind ->
+            val target = if (kind == StatusNews.Kind.REPORTS) MisReportesActivity::class.java else PerdidosActivity::class.java
+            startActivity(Intent(this, target).apply {
+                putExtra(LoginActivity.EXTRA_USER_NAME, userName)
+                putExtra(ProfileActivity.EXTRA_USER_EMAIL, userEmail)
+            })
+        }.also { it.start() }
         pendingBanner = PendingBanner(this, binding.pendingBanner, userEmail.orEmpty().trim().lowercase()).also { it.start() }
         binding.tvHello.text = getString(R.string.senior_hello, userName)
 
@@ -109,9 +116,11 @@ class HomeSeniorActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListener
     }
 
     private var pendingBanner: PendingBanner? = null
+    private var statusNews: StatusNews? = null
 
     override fun onDestroy() {
         pendingBanner?.stop()
+        statusNews?.stop()
         tts?.stop()
         tts?.shutdown()
         super.onDestroy()

@@ -57,6 +57,10 @@
         android:textSize="15sp" />
 
     <include
+        android:id="@+id/newsBanner"
+        layout="@layout/view_news_banner" />
+
+    <include
         android:id="@+id/pendingBanner"
         layout="@layout/view_pending_banner" />
 
