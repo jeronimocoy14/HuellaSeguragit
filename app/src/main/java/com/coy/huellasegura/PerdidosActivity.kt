@@ -163,13 +163,9 @@ class PerdidosActivity : BaseAccessibleActivity() {
                 val batch = db.batch()
                 avisos.documents.forEach { batch.delete(it.reference) }
                 batch.delete(doc.reference)
-                batch.commit()
-                    .addOnSuccessListener {
-                        Toast.makeText(this, R.string.perdidos_already_done, Toast.LENGTH_LONG).show()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, R.string.perdidos_send_error, Toast.LENGTH_SHORT).show()
-                    }
+                OfflineWrite.notify(this, batch.commit()) {
+                    Toast.makeText(this, R.string.perdidos_already_done, Toast.LENGTH_LONG).show()
+                }
             }
             .addOnFailureListener {
                 Toast.makeText(this, R.string.perdidos_send_error, Toast.LENGTH_SHORT).show()

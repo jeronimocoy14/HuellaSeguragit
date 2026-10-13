@@ -79,11 +79,14 @@ class PerdidosModeracionActivity : BaseAccessibleActivity() {
         }
 
         item.btnAceptar.setOnClickListener {
-            doc.reference.update(
-                mapOf(
-                    "estado" to "publicado",
-                    "revisadoPor" to funcionarioEmail,
-                    "fechaPublicacion" to FieldValue.serverTimestamp()
+            OfflineWrite.notify(
+                this,
+                doc.reference.update(
+                    mapOf(
+                        "estado" to "publicado",
+                        "revisadoPor" to funcionarioEmail,
+                        "fechaPublicacion" to FieldValue.serverTimestamp()
+                    )
                 )
             )
         }
@@ -122,7 +125,7 @@ class PerdidosModeracionActivity : BaseAccessibleActivity() {
                         "editadoPor" to funcionarioEmail
                     )
                     if (doc.getString("descripcionOriginal").isNullOrBlank()) updates["descripcionOriginal"] = current
-                    doc.reference.update(updates)
+                    OfflineWrite.notify(this, doc.reference.update(updates))
                 }
                 dialog.dismiss()
             }
@@ -152,11 +155,14 @@ class PerdidosModeracionActivity : BaseAccessibleActivity() {
                     form.tilTexto.error = getString(R.string.perdidos_mod_reject_error)
                     return@setOnClickListener
                 }
-                doc.reference.update(
-                    mapOf(
-                        "estado" to "rechazado",
-                        "motivoRechazo" to motivo,
-                        "revisadoPor" to funcionarioEmail
+                OfflineWrite.notify(
+                    this,
+                    doc.reference.update(
+                        mapOf(
+                            "estado" to "rechazado",
+                            "motivoRechazo" to motivo,
+                            "revisadoPor" to funcionarioEmail
+                        )
                     )
                 )
                 dialog.dismiss()

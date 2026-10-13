@@ -394,4 +394,10 @@
     <string name="pending_banner_failed">Aún no se pudo enviar. Lo intentaremos solos en cuanto sea posible.</string>
     <string name="reports_status_unsent">Sin enviar</string>
     <string name="reports_detail_unsent">Está guardado en tu teléfono y se enviará cuando haya señal.</string>
+    <string name="write_queued">Guardado en tu teléfono. Se enviará cuando vuelvas a tener señal.</string>
+    <string name="write_error">No se pudo guardar el cambio. Intenta de nuevo.</string>
+    <string name="chat_queued">Mensaje guardado. Se enviará cuando vuelvas a tener señal.</string>
+    <string name="professional_case_taken_queued">Caso tomado. Se enviará cuando vuelvas a tener señal.</string>
+    <string name="professional_case_resolved_queued">Caso resuelto. Se enviará cuando vuelvas a tener señal.</string>
+    <string name="professional_case_reopened_queued">Caso devuelto a «en atención». Se enviará cuando vuelvas a tener señal.</string>
 </resources>

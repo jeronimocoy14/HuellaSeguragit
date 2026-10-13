@@ -203,52 +203,57 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
     }
 
     private fun resolveCase(doc: DocumentSnapshot) {
-        doc.reference.update(
-            mapOf(
-                "estado" to "resuelto",
-                "fechaResolucion" to com.google.firebase.firestore.FieldValue.serverTimestamp()
-            )
-        )
-            .addOnSuccessListener {
-                Snackbar.make(binding.root, R.string.professional_case_resolved, 6000)
+        OfflineWrite.run(
+            this,
+            doc.reference.update(
+                mapOf(
+                    "estado" to "resuelto",
+                    "fechaResolucion" to com.google.firebase.firestore.FieldValue.serverTimestamp()
+                )
+            ),
+            onDone = { queued ->
+                Snackbar.make(
+                    binding.root,
+                    if (queued) R.string.professional_case_resolved_queued else R.string.professional_case_resolved,
+                    6000
+                )
                     .setAction(R.string.btn_deshacer) { undoResolve(doc) }
                     .setActionTextColor(ContextCompat.getColor(this, R.color.surface_background))
                     .show()
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, R.string.report_send_error, Toast.LENGTH_SHORT).show()
-            }
+            },
+            onError = { Toast.makeText(this, R.string.write_error, Toast.LENGTH_SHORT).show() }
+        )
     }
 
     /** Devuelve el caso a «en atención» (conserva quién lo atendía). */
     private fun undoResolve(doc: DocumentSnapshot) {
-        doc.reference.update(
-            mapOf(
-                "estado" to "en_atencion",
-                "fechaResolucion" to com.google.firebase.firestore.FieldValue.delete()
-            )
-        )
-            .addOnSuccessListener {
-                Toast.makeText(this, R.string.professional_case_reopened, Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, R.string.report_send_error, Toast.LENGTH_SHORT).show()
-            }
+        OfflineWrite.notify(
+            this,
+            doc.reference.update(
+                mapOf(
+                    "estado" to "en_atencion",
+                    "fechaResolucion" to com.google.firebase.firestore.FieldValue.delete()
+                )
+            ),
+            R.string.professional_case_reopened_queued
+        ) {
+            Toast.makeText(this, R.string.professional_case_reopened, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun takeCase(doc: DocumentSnapshot) {
-        doc.reference.update(
-            mapOf(
-                "estado" to "en_atencion",
-                "atendidoPor" to intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL).orEmpty()
-            )
-        )
-            .addOnSuccessListener {
-                Toast.makeText(this, R.string.professional_case_taken, Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, R.string.report_send_error, Toast.LENGTH_SHORT).show()
-            }
+        OfflineWrite.notify(
+            this,
+            doc.reference.update(
+                mapOf(
+                    "estado" to "en_atencion",
+                    "atendidoPor" to intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL).orEmpty()
+                )
+            ),
+            R.string.professional_case_taken_queued
+        ) {
+            Toast.makeText(this, R.string.professional_case_taken, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun relativeTime(epochMillis: Long): String {

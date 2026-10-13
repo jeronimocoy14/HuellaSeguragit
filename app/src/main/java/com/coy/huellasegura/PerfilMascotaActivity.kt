@@ -301,8 +301,8 @@ class PerfilMascotaActivity : AppCompatActivity() {
 
         if (!vetMode && estado == RegistroEstado.PENDIENTE) {
             item.decision.visibility = View.VISIBLE
-            item.btnRechazar.setOnClickListener { doc.reference.delete() }
-            item.btnAceptar.setOnClickListener { doc.reference.update("estado", "aceptado") }
+            item.btnRechazar.setOnClickListener { OfflineWrite.notify(this, doc.reference.delete()) }
+            item.btnAceptar.setOnClickListener { OfflineWrite.notify(this, doc.reference.update("estado", "aceptado")) }
         }
 
         item.root.enablePressScale()
@@ -405,7 +405,7 @@ class PerfilMascotaActivity : AppCompatActivity() {
                         data["proximaVisitaMillis"] = millis
                         data["proximaVisita"] = texto
                     }
-                    Firebase.firestore.collection("mascotas").document(mascotaId).collection("historial").add(data)
+                    OfflineWrite.notify(this, Firebase.firestore.collection("mascotas").document(mascotaId).collection("historial").document().set(data))
                 } else {
                     data["editadoPorVet"] = vetEmail
                     data["fechaEdicion"] = FieldValue.serverTimestamp()
@@ -418,7 +418,7 @@ class PerfilMascotaActivity : AppCompatActivity() {
                         data["proximaVisitaMillis"] = FieldValue.delete()
                         data["proximaVisita"] = FieldValue.delete()
                     }
-                    existing.reference.update(data)
+                    OfflineWrite.notify(this, existing.reference.update(data))
                 }
                 dialog.dismiss()
             }
@@ -507,12 +507,15 @@ class PerfilMascotaActivity : AppCompatActivity() {
                     form.tilMotivo.error = getString(R.string.pets_error_annul_reason)
                     return@setOnClickListener
                 }
-                doc.reference.update(
-                    mapOf(
-                        "estado" to "anulado",
-                        "motivoAnulacion" to motivo,
-                        "anuladoPor" to vetEmail,
-                        "fechaAnulacion" to FieldValue.serverTimestamp()
+                OfflineWrite.notify(
+                    this,
+                    doc.reference.update(
+                        mapOf(
+                            "estado" to "anulado",
+                            "motivoAnulacion" to motivo,
+                            "anuladoPor" to vetEmail,
+                            "fechaAnulacion" to FieldValue.serverTimestamp()
+                        )
                     )
                 )
                 dialog.dismiss()
@@ -536,8 +539,11 @@ class PerfilMascotaActivity : AppCompatActivity() {
             .setPositiveButton(R.string.btn_guardar) { _, _ ->
                 val text = input.text.toString().trim()
                 if (text.isNotBlank()) {
-                    Firebase.firestore.collection("mascotas").document(mascotaId)
-                        .update("comportamiento", FieldValue.arrayUnion(text))
+                    OfflineWrite.notify(
+                        this,
+                        Firebase.firestore.collection("mascotas").document(mascotaId)
+                            .update("comportamiento", FieldValue.arrayUnion(text))
+                    )
                 }
             }
             .setNegativeButton(R.string.btn_cancelar, null)

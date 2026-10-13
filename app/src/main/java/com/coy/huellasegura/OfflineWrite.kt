@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Handler
 import android.os.Looper
+import android.widget.Toast
 import com.google.android.gms.tasks.Task
 
 object OfflineWrite {
@@ -47,5 +48,26 @@ object OfflineWrite {
 
         write.addOnSuccessListener { done(false) }.addOnFailureListener { fail(it) }
         if (!hasInternet(context)) done(true) else handler.postDelayed({ done(true) }, WAIT_MS)
+    }
+
+    /**
+     * Para cambios sin pantalla de confirmación propia (aceptar, rechazar, editar…): sin internet
+     * avisa que quedó guardado en el teléfono y se enviará solo; con un error real lo dice;
+     * si todo sale bien llama a [onSuccess].
+     */
+    fun notify(
+        context: Context,
+        write: Task<*>,
+        queuedMessage: Int = R.string.write_queued,
+        onSuccess: () -> Unit = {},
+    ) {
+        run(
+            context,
+            write,
+            onDone = { queued ->
+                if (queued) Toast.makeText(context, queuedMessage, Toast.LENGTH_LONG).show() else onSuccess()
+            },
+            onError = { Toast.makeText(context, R.string.write_error, Toast.LENGTH_SHORT).show() }
+        )
     }
 }

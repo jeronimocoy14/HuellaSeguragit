@@ -273,9 +273,14 @@ class ChatActivity : BaseAccessibleActivity() {
         val batch = Firebase.firestore.batch()
         batch.set(chatRef, chatData, SetOptions.merge())
         batch.set(chatRef.collection("mensajes").document(), message)
-        batch.commit().addOnFailureListener {
-            Toast.makeText(this, R.string.chat_error_send, Toast.LENGTH_SHORT).show()
-        }
+        OfflineWrite.run(
+            this,
+            batch.commit(),
+            onDone = { queued ->
+                if (queued) Toast.makeText(this, R.string.chat_queued, Toast.LENGTH_LONG).show()
+            },
+            onError = { Toast.makeText(this, R.string.chat_error_send, Toast.LENGTH_SHORT).show() }
+        )
     }
 
     override fun onDestroy() {

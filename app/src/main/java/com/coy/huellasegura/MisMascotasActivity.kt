@@ -86,8 +86,8 @@ class MisMascotasActivity : AppCompatActivity() {
         val item = ItemSolicitudBinding.inflate(layoutInflater, binding.requestsContainer, false)
         item.tvSolicitudTitle.text = getString(R.string.pets_request_vet_title)
         item.tvSolicitudSubtitle.text = getString(R.string.pets_request_vet_subtitle, doc.id)
-        item.btnAceptar.setOnClickListener { doc.reference.update("estado", "aceptado") }
-        item.btnRechazar.setOnClickListener { doc.reference.delete() }
+        item.btnAceptar.setOnClickListener { OfflineWrite.notify(this, doc.reference.update("estado", "aceptado")) }
+        item.btnRechazar.setOnClickListener { OfflineWrite.notify(this, doc.reference.delete()) }
         binding.requestsContainer.addView(item.root)
     }
 
@@ -97,8 +97,8 @@ class MisMascotasActivity : AppCompatActivity() {
         val vet = doc.getString("creadoPorVet").orEmpty()
         item.tvSolicitudTitle.text = getString(R.string.pets_request_pet_title, nombre)
         item.tvSolicitudSubtitle.text = getString(R.string.pets_request_pet_subtitle, vet)
-        item.btnAceptar.setOnClickListener { doc.reference.update("estado", "aceptada") }
-        item.btnRechazar.setOnClickListener { doc.reference.delete() }
+        item.btnAceptar.setOnClickListener { OfflineWrite.notify(this, doc.reference.update("estado", "aceptada")) }
+        item.btnRechazar.setOnClickListener { OfflineWrite.notify(this, doc.reference.delete()) }
         binding.requestsContainer.addView(item.root)
     }
 
