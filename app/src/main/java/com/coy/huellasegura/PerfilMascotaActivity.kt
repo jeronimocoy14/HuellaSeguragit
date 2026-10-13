@@ -361,14 +361,27 @@ class PerfilMascotaActivity : AppCompatActivity() {
         }
         refreshDate()
 
+        form.etDescripcion.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+            override fun afterTextChanged(s: android.text.Editable?) {
+                if (!s.isNullOrBlank()) form.tilDescripcion.error = null
+            }
+        })
+
         form.rowNextVisit.setOnClickListener {
             val cal = Calendar.getInstance().apply { timeInMillis = proximaMillis ?: System.currentTimeMillis() }
+            val today = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+            }
             DatePickerDialog(this, { _, y, m, d ->
-                val picked = Calendar.getInstance().apply { set(y, m, d, 0, 0, 0) }
+                val picked = Calendar.getInstance().apply { set(y, m, d, 0, 0, 0); set(Calendar.MILLISECOND, 0) }
                 proximaMillis = picked.timeInMillis
                 proximaTexto = dateFormat.format(picked.time)
                 refreshDate()
-            }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
+            }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).apply {
+                datePicker.minDate = today.timeInMillis
+            }.show()
         }
         form.btnClearDate.setOnClickListener {
             proximaMillis = null
@@ -490,6 +503,14 @@ class PerfilMascotaActivity : AppCompatActivity() {
     private fun showAnnulDialog(doc: DocumentSnapshot) {
         val vetEmail = intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL).orEmpty()
         val form = DialogAnularRegistroBinding.inflate(layoutInflater)
+
+        form.etMotivo.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+            override fun afterTextChanged(s: android.text.Editable?) {
+                if (!s.isNullOrBlank()) form.tilMotivo.error = null
+            }
+        })
 
         val dialog = pawDialog()
             .setTitle(R.string.pets_dialog_annul_title)

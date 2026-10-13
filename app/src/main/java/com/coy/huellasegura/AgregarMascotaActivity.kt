@@ -62,6 +62,10 @@ class AgregarMascotaActivity : AppCompatActivity() {
             binding.etCorreoDueno.error = getString(R.string.pets_error_owner_email)
             return
         }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(duenoCorreo).matches()) {
+            binding.etCorreoDueno.error = getString(R.string.pets_error_owner_email_invalid)
+            return
+        }
         val nombre = binding.etNombre.text.toString().trim()
         if (nombre.isBlank()) {
             binding.etNombre.error = getString(R.string.pets_error_name)
