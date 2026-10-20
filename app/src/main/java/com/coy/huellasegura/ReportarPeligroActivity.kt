@@ -29,7 +29,7 @@ class ReportarPeligroActivity : BaseAccessibleActivity(), TextToSpeech.OnInitLis
 
     private val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success && pendingPhotoUri != null) {
-            binding.photoPreview.setImageURI(pendingPhotoUri)
+            PhotoUtil.loadPreview(this, pendingPhotoUri!!) { bitmap -> bitmap?.let { binding.photoPreview.setImageBitmap(it) } }
             binding.photoPreview.visibility = android.view.View.VISIBLE
             binding.photoPrompt.visibility = android.view.View.GONE
             photoPath = pendingPhotoFile?.absolutePath

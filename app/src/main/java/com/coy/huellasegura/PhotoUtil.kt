@@ -11,6 +11,8 @@ import android.util.Log
 import android.util.LruCache
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 
 object PhotoUtil {
@@ -41,6 +43,21 @@ object PhotoUtil {
         encoded
     } catch (e: Exception) {
         null
+    }
+
+    /**
+     * Vista previa de una foto de la cámara. `ImageView.setImageURI` la decodifica completa en el hilo
+     * principal (una foto de 12 MP ocupa unos 48 MB y puede agotar la memoria de un celular antiguo); aquí
+     * se lee reducida ([maxSide] píxeles) en un hilo secundario y se entrega en el principal.
+     */
+    fun loadPreview(context: Context, uri: Uri, maxSide: Int = 540, onResult: (Bitmap?) -> Unit) {
+        val appContext = context.applicationContext
+        Thread {
+            val started = SystemClock.elapsedRealtime()
+            val bitmap = runCatching { decodeSampled(appContext, uri, maxSide) }.getOrNull()
+            Log.d(TAG, "vista previa: ${SystemClock.elapsedRealtime() - started} ms, ${bitmap?.width}x${bitmap?.height}")
+            Handler(Looper.getMainLooper()).post { onResult(bitmap) }
+        }.start()
     }
 
     /** Foto guardada en un archivo local (p. ej. la que tomó la cámara). Bloquea: usar un hilo secundario. */
