@@ -50,6 +50,8 @@ object CaseCard {
         }
 
         val photo = PhotoUtil.decode(doc.getString("fotoBase64"), doc.id)
+        // Esquinas redondeadas también en Android antiguo (el atributo XML solo funciona desde Android 12).
+        item.ivCasePhoto.clipToOutline = true
         if (photo != null) {
             item.ivCasePhoto.visibility = View.VISIBLE
             item.ivCasePhoto.setImageBitmap(photo)

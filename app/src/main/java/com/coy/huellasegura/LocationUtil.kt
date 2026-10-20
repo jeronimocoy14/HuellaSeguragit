@@ -6,11 +6,12 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
-import android.os.CancellationSignal
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import androidx.core.content.ContextCompat
+import androidx.core.location.LocationManagerCompat
+import androidx.core.os.CancellationSignal
 
 object LocationUtil {
 
@@ -53,7 +54,9 @@ object LocationUtil {
             finish(null)
         }, timeoutMs)
         runCatching {
-            manager.getCurrentLocation(provider, cancel, ContextCompat.getMainExecutor(context)) { finish(it) }
+            // LocationManager.getCurrentLocation existe desde Android 11; la versión de AndroidX hace lo mismo
+            // en cualquier versión (en las antiguas usa una sola actualización de ubicación).
+            LocationManagerCompat.getCurrentLocation(manager, provider, cancel, ContextCompat.getMainExecutor(context)) { finish(it) }
         }.onFailure { finish(null) }
     }
 

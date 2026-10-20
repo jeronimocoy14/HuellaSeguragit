@@ -1,5 +1,6 @@
 package com.coy.huellasegura
 
+import android.util.Log
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -17,7 +18,7 @@ object GeoUtil {
         connection.readTimeout = timeoutMs
         val response = connection.inputStream.bufferedReader().use { it.readText() }
         JSONObject(response).optString("display_name").ifBlank { null }
-    }.getOrNull()
+    }.onFailure { Log.w("GeoUtil", "No se pudo obtener la dirección: $it") }.getOrNull()
 
     /** Enlace para abrir el punto en la app de mapas o en el navegador. */
     fun mapsUrl(lat: Double, lon: Double): String =

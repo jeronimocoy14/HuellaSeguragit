@@ -92,6 +92,8 @@ class ReportarPeligroUbicacionActivity : BaseAccessibleActivity(), TextToSpeech.
 
     @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
     private fun setupMapWebView() {
+        // El atributo android:clipToOutline del XML solo lo respeta Android 12+; por código sirve desde Android 5.
+        binding.mapWebView.clipToOutline = true
         binding.mapWebView.settings.javaScriptEnabled = true
         binding.mapWebView.settings.domStorageEnabled = true
         binding.mapWebView.webViewClient = WebViewClient()

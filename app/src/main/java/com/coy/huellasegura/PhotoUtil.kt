@@ -7,9 +7,11 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 import android.util.Base64
+import android.util.Log
 import android.util.LruCache
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
+import android.os.SystemClock
 
 object PhotoUtil {
 
@@ -17,15 +19,26 @@ object PhotoUtil {
         override fun sizeOf(key: String, value: Bitmap) = value.byteCount
     }
 
+    private const val TAG = "PhotoUtil"
+
     fun encode(context: Context, uri: Uri, maxSide: Int = 720, quality: Int = 72): String? = try {
+        val started = SystemClock.elapsedRealtime()
         val bitmap = decodeSampled(context, uri, maxSide) ?: return null
+        val decodedMs = SystemClock.elapsedRealtime() - started
         val scale = maxSide.toFloat() / maxOf(bitmap.width, bitmap.height)
         val scaled = if (scale < 1f) {
             Bitmap.createScaledBitmap(bitmap, (bitmap.width * scale).toInt(), (bitmap.height * scale).toInt(), true)
         } else bitmap
         val out = ByteArrayOutputStream()
         scaled.compress(Bitmap.CompressFormat.JPEG, quality, out)
-        Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP)
+        val encoded = Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP)
+        // Tiempos para medir esta operación (la más pesada de la app) en dispositivos de gama baja.
+        Log.d(
+            TAG,
+            "foto: leer y reducir ${decodedMs} ms, total ${SystemClock.elapsedRealtime() - started} ms, " +
+                "${bitmap.width}x${bitmap.height} -> ${scaled.width}x${scaled.height}, ${encoded.length / 1024} KB en Base64"
+        )
+        encoded
     } catch (e: Exception) {
         null
     }
