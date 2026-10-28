@@ -36,8 +36,8 @@ class ReportarPeligroUbicacionActivity : BaseAccessibleActivity(), TextToSpeech.
 
     private val locationListener = LocationListener { location -> onLocationObtained(location) }
 
-    private val requestLocationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) fetchLocation() else showLocationFailed()
+    private val requestLocationPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+        if (results.values.any { it }) fetchLocation() else showLocationFailed()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,10 +71,10 @@ class ReportarPeligroUbicacionActivity : BaseAccessibleActivity(), TextToSpeech.
     }
 
     private fun requestLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (LocationUtil.hasPermission(this)) {
             fetchLocation()
         } else {
-            requestLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            requestLocationPermission.launch(LocationUtil.PERMISSIONS)
         }
     }
 

@@ -71,8 +71,8 @@ class ChatActivity : BaseAccessibleActivity() {
     private val isCitizen get() = role == ROLE_CIUDADANO
 
     private val requestLocationPermission =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (granted) confirmShareLocation()
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+            if (results.values.any { it }) confirmShareLocation()
             else Toast.makeText(this, R.string.chat_location_no_permission, Toast.LENGTH_LONG).show()
         }
     private val unreadField get() = if (isCitizen) "noLeidoCiudadano" else "noLeidoFuncionario"
@@ -112,7 +112,7 @@ class ChatActivity : BaseAccessibleActivity() {
         binding.btnSend.setOnClickListener { send() }
         binding.btnLocation.setOnClickListener {
             if (LocationUtil.hasPermission(this)) confirmShareLocation()
-            else requestLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            else requestLocationPermission.launch(LocationUtil.PERMISSIONS)
         }
         binding.etMessage.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit

@@ -6,8 +6,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.os.SystemClock
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
@@ -16,10 +18,21 @@ import androidx.core.os.CancellationSignal
 object LocationUtil {
 
     private const val MAX_AGE_MS = 120_000L
+    private const val TAG = "LocationUtil"
+
+    /**
+     * Los dos permisos de ubicación. Desde Android 12 la persona puede dar solo la ubicación
+     * aproximada, así que se piden juntos y basta con que se conceda uno.
+     */
+    val PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+
+    private fun granted(context: Context, permission: String) =
+        ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+
+    fun hasFinePermission(context: Context): Boolean = granted(context, Manifest.permission.ACCESS_FINE_LOCATION)
 
     fun hasPermission(context: Context): Boolean =
-        ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED
+        hasFinePermission(context) || granted(context, Manifest.permission.ACCESS_COARSE_LOCATION)
 
     /**
      * Pide una ubicación actual (GPS o red). Si no llega a tiempo usa la última conocida solo si es
@@ -33,8 +46,15 @@ object LocationUtil {
             return
         }
         val manager = context.getSystemService(LocationManager::class.java)
-        val providers = listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)
+        // Con solo la ubicación aproximada Android no deja usar el GPS: se usa el proveedor combinado
+        // (Android 12 o más) y la red.
+        val providers = when {
+            hasFinePermission(context) -> listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> listOf(LocationManager.FUSED_PROVIDER, LocationManager.NETWORK_PROVIDER)
+            else -> listOf(LocationManager.NETWORK_PROVIDER)
+        }
         val provider = providers.firstOrNull { runCatching { manager.isProviderEnabled(it) }.getOrDefault(false) }
+        Log.d(TAG, "permiso preciso=${hasFinePermission(context)} proveedores=$providers elegido=$provider")
         if (provider == null) {
             onResult(lastKnown(manager, providers))
             return
@@ -47,7 +67,9 @@ object LocationUtil {
             if (done) return
             done = true
             handler.removeCallbacksAndMessages(null)
-            onResult(location ?: lastKnown(manager, providers))
+            val result = location ?: lastKnown(manager, providers)
+            Log.d(TAG, "actual=${location != null} resultado=${result != null}")
+            onResult(result)
         }
         handler.postDelayed({
             cancel.cancel()
@@ -57,7 +79,10 @@ object LocationUtil {
             // LocationManager.getCurrentLocation existe desde Android 11; la versión de AndroidX hace lo mismo
             // en cualquier versión (en las antiguas usa una sola actualización de ubicación).
             LocationManagerCompat.getCurrentLocation(manager, provider, cancel, ContextCompat.getMainExecutor(context)) { finish(it) }
-        }.onFailure { finish(null) }
+        }.onFailure {
+            Log.w(TAG, "No se pudo pedir la ubicación: $it")
+            finish(null)
+        }
     }
 
     @SuppressLint("MissingPermission")

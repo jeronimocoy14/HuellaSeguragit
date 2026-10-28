@@ -59,8 +59,8 @@ class ReportarPeligroSimpleActivity : BaseAccessibleActivity(), TextToSpeech.OnI
         }
     }
 
-    private val requestLocationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) fetchLocation() else showLocationFailed()
+    private val requestLocationPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+        if (results.values.any { it }) fetchLocation() else showLocationFailed()
     }
 
     private val locationListener = LocationListener { location ->
@@ -107,7 +107,7 @@ class ReportarPeligroSimpleActivity : BaseAccessibleActivity(), TextToSpeech.OnI
 
         binding.btnListen.setOnClickListener { readScreenAloud() }
 
-        requestLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        requestLocationPermission.launch(LocationUtil.PERMISSIONS)
         updateSendButtonState()
     }
 
