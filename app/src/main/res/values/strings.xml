@@ -179,6 +179,14 @@
     <string name="species_detected">Categoría detectada: %1$s</string>
     <string name="species_detected_detail">Categoría detectada: %1$s (%2$s)</string>
     <string name="species_not_detected">No se pudo reconocer el animal en la foto</string>
+    <string name="species_filter_all">Todas</string>
+    <string name="species_filter_empty">No hay nada de esta categoría por ahora.</string>
+    <string name="stats_by_species">Por categoría de animal</string>
+    <string name="stats_by_species_note">Según la categoría que detectó la app en la foto. Los reportes anteriores o con fotos sin animal reconocido no tienen categoría.</string>
+    <plurals name="stats_species_none">
+        <item quantity="one">%d reporte sin categoría</item>
+        <item quantity="other">%d reportes sin categoría</item>
+    </plurals>
     <string name="species_card">Categoría: %1$s</string>
     <string name="pets_species_other">Otro</string>
     <string name="pets_add_title">Agregar mascota</string>

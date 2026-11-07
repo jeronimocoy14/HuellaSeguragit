@@ -94,6 +94,14 @@
                 android:textColor="@color/text_secondary"
                 android:textSize="13.5sp" />
 
+            <include
+                android:id="@+id/speciesFilter"
+                layout="@layout/view_species_filter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp" />
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

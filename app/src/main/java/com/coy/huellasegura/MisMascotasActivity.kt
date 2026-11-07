@@ -27,6 +27,7 @@ class MisMascotasActivity : AppCompatActivity() {
     private var pendingVets: List<DocumentSnapshot> = emptyList()
     private var pendingPets: List<DocumentSnapshot> = emptyList()
     private var acceptedPets: List<DocumentSnapshot> = emptyList()
+    private var speciesFilter: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +45,7 @@ class MisMascotasActivity : AppCompatActivity() {
         userEmail = intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL).orEmpty().trim().lowercase()
 
         binding.btnBack.setOnClickListener { finish() }
+        SpeciesFilter.setup(this, binding.speciesFilter.chipGroupSpecies) { speciesFilter = it; renderPets() }
 
         vetsListener = Firebase.firestore.collection("veterinarios")
             .whereEqualTo("estado", "pendiente")
@@ -120,7 +122,16 @@ class MisMascotasActivity : AppCompatActivity() {
             binding.petsContainer.addView(subtitle)
             return
         }
-        acceptedPets.forEach { doc -> addPetView(doc) }
+        val shown = acceptedPets.filter { SpeciesFilter.matches(it, speciesFilter) }
+        if (shown.isEmpty()) {
+            binding.petsContainer.addView(TextView(this).apply {
+                text = getString(R.string.species_filter_empty)
+                setTextColor(ContextCompat.getColor(this@MisMascotasActivity, R.color.text_secondary))
+                textSize = 14f
+            })
+            return
+        }
+        shown.forEach { doc -> addPetView(doc) }
     }
 
     private fun addPetView(doc: DocumentSnapshot) {

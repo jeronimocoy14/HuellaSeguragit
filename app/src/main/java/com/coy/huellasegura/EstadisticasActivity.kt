@@ -28,6 +28,7 @@ class EstadisticasActivity : BaseAccessibleActivity() {
     private lateinit var binding: ActivityEstadisticasBinding
     private var listener: ListenerRegistration? = null
     private var docs: List<DocumentSnapshot> = emptyList()
+    private var speciesFilter: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +44,7 @@ class EstadisticasActivity : BaseAccessibleActivity() {
 
         binding.btnBack.setOnClickListener { finish() }
         binding.chipGroupPeriod.setOnCheckedStateChangeListener { _, _ -> render() }
+        SpeciesFilter.setup(this, binding.speciesFilter.chipGroupSpecies) { speciesFilter = it; render() }
 
         listener = Firebase.firestore.collection("reportes").addSnapshotListener { snapshot, _ ->
             if (snapshot == null) return@addSnapshotListener
@@ -63,9 +65,12 @@ class EstadisticasActivity : BaseAccessibleActivity() {
         // Un reporte recién escrito aún no tiene fecha del servidor: se cuenta cuando la tenga.
         val inPeriod = docs.filter { doc -> createdAt(doc)?.let { since == null || it >= since } == true }
 
-        renderTotals(inPeriod)
-        renderTypes(inPeriod)
-        renderWeeks()
+        // El gráfico por categoría siempre muestra todas (para compararlas); el resto sigue la categoría elegida.
+        renderSpecies(inPeriod)
+        val chosen = inPeriod.filter { SpeciesFilter.matches(it, speciesFilter) }
+        renderTotals(chosen)
+        renderTypes(chosen)
+        renderWeeks(docs.filter { SpeciesFilter.matches(it, speciesFilter) })
     }
 
     private fun renderTotals(list: List<DocumentSnapshot>) {
@@ -136,6 +141,39 @@ class EstadisticasActivity : BaseAccessibleActivity() {
         }
     }
 
+    /** Reportes por categoría de animal; los que no tienen categoría (anteriores a la función o sin animal reconocido) van aparte. */
+    private fun renderSpecies(list: List<DocumentSnapshot>) {
+        binding.speciesContainer.removeAllViews()
+        if (list.isEmpty()) {
+            binding.speciesContainer.addView(TextView(this).apply {
+                text = getString(R.string.stats_empty)
+                setTextColor(ContextCompat.getColor(this@EstadisticasActivity, R.color.text_secondary))
+                textSize = 14f
+            })
+            return
+        }
+        val counts = list.mapNotNull { doc ->
+            val name = doc.getString("especie").orEmpty()
+            Species.all.firstOrNull { getString(it.nameRes).equals(name, ignoreCase = true) }?.let { getString(it.nameRes) }
+        }.groupingBy { it }.eachCount().entries.sortedByDescending { it.value }
+        val withoutSpecies = list.size - counts.sumOf { it.value }
+
+        // Los reportes sin categoría (anteriores a la función o sin animal reconocido) van como nota, no como barra,
+        // para que no aplasten a las demás.
+        val max = counts.maxOfOrNull { it.value } ?: 1
+        counts.forEachIndexed { index, (label, count) ->
+            binding.speciesContainer.addView(barRow(label, count, max, topMargin = if (index == 0) 0 else 12))
+        }
+        if (withoutSpecies > 0) {
+            binding.speciesContainer.addView(TextView(this).apply {
+                text = resources.getQuantityString(R.plurals.stats_species_none, withoutSpecies, withoutSpecies)
+                setTextColor(ContextCompat.getColor(this@EstadisticasActivity, R.color.text_secondary))
+                textSize = 13f
+                setPadding(0, if (counts.isEmpty()) 0 else (14 * resources.displayMetrics.density).toInt(), 0, 0)
+            })
+        }
+    }
+
     private fun barRow(label: String, count: Int, max: Int, topMargin: Int): View {
         val density = resources.displayMetrics.density
         val row = LinearLayout(this).apply {
@@ -173,7 +211,7 @@ class EstadisticasActivity : BaseAccessibleActivity() {
     }
 
     /** Reportes creados en cada una de las últimas 8 semanas (de lunes a domingo). */
-    private fun renderWeeks() {
+    private fun renderWeeks(list: List<DocumentSnapshot>) {
         fun weekStart(millis: Long): Long = Calendar.getInstance().apply {
             firstDayOfWeek = Calendar.MONDAY
             timeInMillis = millis
@@ -185,7 +223,7 @@ class EstadisticasActivity : BaseAccessibleActivity() {
         val starts = (WEEKS - 1 downTo 0).map { back ->
             Calendar.getInstance().apply { timeInMillis = current; add(Calendar.DAY_OF_YEAR, -7 * back) }.timeInMillis
         }
-        val counts = docs.mapNotNull { createdAt(it) }.groupingBy { weekStart(it) }.eachCount()
+        val counts = list.mapNotNull { createdAt(it) }.groupingBy { weekStart(it) }.eachCount()
         val format = SimpleDateFormat("d MMM", Locale("es"))
         binding.weekChart.setData(starts.map { format.format(it).replace(".", "") to (counts[it] ?: 0) })
     }

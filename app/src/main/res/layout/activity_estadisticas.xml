@@ -114,6 +114,13 @@
                     app:chipStrokeWidth="1.5dp" />
             </com.google.android.material.chip.ChipGroup>
 
+            <include
+                android:id="@+id/speciesFilter"
+                layout="@layout/view_species_filter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -275,6 +282,32 @@
 
             <LinearLayout
                 android:id="@+id/typeContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_card"
+                android:orientation="vertical"
+                android:padding="14dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/stats_by_species"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/stats_by_species_note"
+                android:textColor="@color/text_secondary"
+                android:textSize="12.5sp" />
+
+            <LinearLayout
+                android:id="@+id/speciesContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"

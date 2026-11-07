@@ -31,6 +31,8 @@ class PerdidosActivity : BaseAccessibleActivity() {
     private var mineListener: ListenerRegistration? = null
     private var userEmail = ""
     private var userName = ""
+    private var catalogDocs: List<DocumentSnapshot> = emptyList()
+    private var speciesFilter: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +60,8 @@ class PerdidosActivity : BaseAccessibleActivity() {
             })
         }
 
+        SpeciesFilter.setup(this, binding.speciesFilter.chipGroupSpecies) { speciesFilter = it; renderCatalog() }
+
         binding.rvCatalogo.layoutManager = GridLayoutManager(this, 2)
         binding.rvCatalogo.adapter = catalogAdapter
 
@@ -81,10 +85,17 @@ class PerdidosActivity : BaseAccessibleActivity() {
         catalogListener = Firebase.firestore.collection("perdidos")
             .whereEqualTo("estado", "publicado")
             .addSnapshotListener { snapshot, _ ->
-                val docs = snapshot?.documents.orEmpty().sortedByDescending { it.createdAtMillis() }
-                binding.tvCatalogEmpty.visibility = if (docs.isEmpty()) View.VISIBLE else View.GONE
-                catalogAdapter.submitList(docs)
+                catalogDocs = snapshot?.documents.orEmpty().sortedByDescending { it.createdAtMillis() }
+                renderCatalog()
             }
+    }
+
+    /** Publicaciones de «Encontré un animal», solo de la categoría elegida (o todas). */
+    private fun renderCatalog() {
+        val docs = catalogDocs.filter { SpeciesFilter.matches(it, speciesFilter) }
+        binding.tvCatalogEmpty.setText(if (catalogDocs.isEmpty()) R.string.perdidos_catalog_empty else R.string.species_filter_empty)
+        binding.tvCatalogEmpty.visibility = if (docs.isEmpty()) View.VISIBLE else View.GONE
+        catalogAdapter.submitList(docs)
     }
 
     private fun listenMine() {
