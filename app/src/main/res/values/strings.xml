@@ -166,6 +166,15 @@
     <string name="pets_btn_add">Agregar mascota</string>
     <string name="pets_species_dog">Perro</string>
     <string name="pets_species_cat">Gato</string>
+    <string name="pets_species_rabbit">Conejo</string>
+    <string name="pets_species_bird">Ave</string>
+    <string name="pets_species_horse">Caballo</string>
+    <string name="pets_species_cow">Vaca</string>
+    <string name="pets_species_pig">Cerdo</string>
+    <string name="pets_species_sheep">Oveja</string>
+    <string name="pets_species_goat">Cabra</string>
+    <string name="pets_species_rodent">Roedor</string>
+    <string name="pets_species_reptile">Reptil</string>
     <string name="pets_species_other">Otro</string>
     <string name="pets_add_title">Agregar mascota</string>
     <string name="pets_hint_name">Nombre de la mascota</string>

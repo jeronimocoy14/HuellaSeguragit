@@ -157,13 +157,7 @@ class PerfilMascotaActivity : AppCompatActivity() {
         binding.tvNombre.text = nombre
         petName = nombre
         petDescription = listOf(especie, raza, edad).filter { it.isNotBlank() }.joinToString(", ")
-        binding.ivHeaderIcon.setImageResource(
-            when (especie) {
-                getString(R.string.pets_species_cat) -> R.drawable.ic_cat
-                getString(R.string.pets_species_dog) -> R.drawable.ic_dog
-                else -> R.drawable.ic_paw
-            }
-        )
+        binding.ivHeaderIcon.setImageDrawable(Species.icon(this, especie))
 
         binding.tagsContainer.removeAllViews()
         listOf(especie, raza, edad).filter { it.isNotBlank() }.forEach { binding.tagsContainer.addView(makeTag(it)) }

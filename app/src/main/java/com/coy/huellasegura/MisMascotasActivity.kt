@@ -129,13 +129,7 @@ class MisMascotasActivity : AppCompatActivity() {
         item.tvMascotaNombre.text = doc.getString("nombre").orEmpty()
         item.tvMascotaSubtitulo.text = listOf(especie, doc.getString("raza").orEmpty(), doc.getString("edad").orEmpty().edadConUnidad())
             .filter { it.isNotBlank() }.joinToString(" · ")
-        item.ivMascotaIcon.setImageResource(
-            when (especie) {
-                getString(R.string.pets_species_cat) -> R.drawable.ic_cat
-                getString(R.string.pets_species_dog) -> R.drawable.ic_dog
-                else -> R.drawable.ic_paw
-            }
-        )
+        item.ivMascotaIcon.setImageDrawable(Species.icon(this, especie))
         item.root.setOnClickListener {
             startActivity(Intent(this, PerfilMascotaActivity::class.java).apply {
                 putExtra(PerfilMascotaActivity.EXTRA_MASCOTA_ID, doc.id)

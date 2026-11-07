@@ -110,13 +110,7 @@ class VeterinarioActivity : BaseAccessibleActivity() {
         val subtitleParts = listOf(especie, raza, edad).filter { it.isNotBlank() }.toMutableList()
         if (duenoCorreo.isNotBlank()) subtitleParts.add(getString(R.string.pets_owner_prefix, duenoCorreo))
         item.tvMascotaSubtitulo.text = subtitleParts.joinToString(" · ")
-        item.ivMascotaIcon.setImageResource(
-            when (especie) {
-                getString(R.string.pets_species_cat) -> R.drawable.ic_cat
-                getString(R.string.pets_species_dog) -> R.drawable.ic_dog
-                else -> R.drawable.ic_paw
-            }
-        )
+        item.ivMascotaIcon.setImageDrawable(Species.icon(this, especie))
         item.tvMascotaEstado.visibility = View.VISIBLE
         item.tvMascotaEstado.text = getString(
             if (estado == "aceptada") R.string.pets_status_accepted else R.string.pets_status_pending
