@@ -30,6 +30,11 @@ object SpeciesFilter {
         }
     }
 
+    /** Vuelve a «Todas». */
+    fun reset(group: ChipGroup) {
+        group.getChildAt(0)?.let { group.check(it.id) }
+    }
+
     /** ¿El documento es de la categoría elegida? Sin categoría elegida (null) entran todos. */
     fun matches(doc: DocumentSnapshot, selected: String?): Boolean =
         selected == null || doc.getString("especie").equals(selected, ignoreCase = true)

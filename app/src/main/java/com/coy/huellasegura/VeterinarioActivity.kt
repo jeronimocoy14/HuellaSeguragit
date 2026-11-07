@@ -19,6 +19,8 @@ class VeterinarioActivity : BaseAccessibleActivity() {
     private lateinit var binding: ActivityVeterinarioBinding
     private lateinit var vetEmail: String
     private var petsListener: ListenerRegistration? = null
+    private var petDocs: List<DocumentSnapshot> = emptyList()
+    private var speciesFilter: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +50,8 @@ class VeterinarioActivity : BaseAccessibleActivity() {
             })
         }
 
+        SpeciesFilter.setup(this, binding.speciesFilter.chipGroupSpecies) { speciesFilter = it; renderPets(petDocs) }
+
         checkOwnStatus()
         listenForPets()
     }
@@ -73,12 +77,22 @@ class VeterinarioActivity : BaseAccessibleActivity() {
     }
 
     private fun renderPets(docs: List<DocumentSnapshot>) {
+        petDocs = docs
         binding.petsContainer.removeAllViews()
         if (docs.isEmpty()) {
             addEmptyState()
             return
         }
-        docs.forEach { addPetView(it) }
+        val shown = docs.filter { SpeciesFilter.matches(it, speciesFilter) }
+        if (shown.isEmpty()) {
+            binding.petsContainer.addView(android.widget.TextView(this).apply {
+                text = getString(R.string.species_filter_empty)
+                setTextColor(androidx.core.content.ContextCompat.getColor(this@VeterinarioActivity, R.color.text_secondary))
+                textSize = 14f
+            })
+            return
+        }
+        shown.forEach { addPetView(it) }
     }
 
     private fun addEmptyState() {

@@ -263,6 +263,15 @@
         </LinearLayout>
     </HorizontalScrollView>
 
+    <include
+        android:id="@+id/speciesFilter"
+        layout="@layout/view_species_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"

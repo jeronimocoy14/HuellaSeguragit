@@ -81,6 +81,13 @@
                 android:textSize="13sp"
                 android:visibility="gone" />
 
+            <include
+                android:id="@+id/speciesFilter"
+                layout="@layout/view_species_filter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp" />
+
             <LinearLayout
                 android:id="@+id/petsContainer"
                 android:layout_width="match_parent"

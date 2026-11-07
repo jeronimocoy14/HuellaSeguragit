@@ -29,35 +29,71 @@ object SpeciesDetector {
 
     /**
      * [name] es la categoría de la app (p. ej. "Ave"), [item] su tarjeta y [detail] el animal concreto que vio
-     * el modelo (p. ej. "Loro / Guacamaya").
+     * el modelo (p. ej. "Loro / Guacamaya"). Si la persona la cambió a mano, [manual] es true y [autoName] guarda
+     * lo que había sugerido el modelo (si sugirió algo), para poder medir cuánto acierta.
      */
-    class Result(val item: Species.Item, val name: String, val detail: String, val confidence: Float) {
+    class Result(
+        val item: Species.Item,
+        val name: String,
+        val detail: String,
+        val confidence: Float,
+        val manual: Boolean = false,
+        val autoName: String? = null,
+    ) {
         /** Campos que se guardan junto al reporte en Firestore. */
-        fun fields(): Map<String, Any> = mapOf(
-            "especie" to name,
-            "especieDetalle" to detail,
-            "especieConfianza" to Math.round(confidence * 100) / 100.0,
-        )
+        fun fields(): Map<String, Any> = buildMap {
+            put("especie", name)
+            if (manual) {
+                put("especieManual", true)
+                autoName?.let { put("especieAuto", it) }
+            } else {
+                put("especieDetalle", detail)
+                put("especieConfianza", Math.round(confidence * 100) / 100.0)
+            }
+        }
     }
 
     /** Texto para mostrar bajo la foto: "Categoría detectada: Ave (Loro / Guacamaya)". */
     fun describe(context: Context, result: Result?): String = when {
         result == null -> context.getString(R.string.species_not_detected)
+        result.manual -> context.getString(R.string.species_manual, result.name)
         result.detail.equals(result.name, ignoreCase = true) -> context.getString(R.string.species_detected, result.name)
         else -> context.getString(R.string.species_detected_detail, result.name, result.detail)
     }
 
     /**
-     * Analiza la foto y va mostrando el resultado en [label] ("Reconociendo…", luego la categoría).
-     * [onResult] recibe el resultado (o null) si la pantalla sigue abierta.
+     * Analiza la foto y va mostrando el resultado en [label] ("Reconociendo…", luego la categoría). Tocar el texto
+     * deja elegir otra categoría a mano (también si no se reconoció ningún animal).
+     * [onResult] recibe el resultado, ya sea el del modelo o el elegido por la persona (null si no hay ninguno).
      */
     fun detectInto(activity: android.app.Activity, uri: Uri, label: android.widget.TextView, onResult: (Result?) -> Unit) {
         label.visibility = android.view.View.VISIBLE
         label.text = activity.getString(R.string.species_detecting)
+        label.setOnClickListener(null)
+        label.isClickable = false
+
+        fun show(result: Result?) {
+            val hint = activity.getString(if (result == null) R.string.species_tap_to_pick else R.string.species_tap_to_change)
+            label.text = describe(activity, result) + "\n" + hint
+        }
+
         detect(activity, uri) { result ->
             if (activity.isDestroyed || activity.isFinishing) return@detect
-            label.text = describe(activity, result)
+            show(result)
             onResult(result)
+            label.setOnClickListener {
+                val names = Species.all.map { activity.getString(it.nameRes) }.toTypedArray()
+                activity.styledDialog()
+                    .setTitle(R.string.species_pick_title)
+                    .setItems(names) { _, index ->
+                        val item = Species.all[index]
+                        val name = names[index]
+                        val chosen = Result(item, name, name, 1f, manual = true, autoName = result?.name)
+                        show(chosen)
+                        onResult(chosen)
+                    }
+                    .show()
+            }
         }
     }
 

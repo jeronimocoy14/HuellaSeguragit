@@ -26,6 +26,8 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
     private var casesListener: ListenerRegistration? = null
     private var perdidosListener: ListenerRegistration? = null
     private var resolvedListener: ListenerRegistration? = null
+    private var caseDocs: List<DocumentSnapshot> = emptyList()
+    private var speciesFilter: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +74,8 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
 
         binding.tabAjustes.setOnClickListener { openAccessibilitySettings() }
 
+        SpeciesFilter.setup(this, binding.speciesFilter.chipGroupSpecies) { speciesFilter = it; renderCases(caseDocs) }
+
         listenForCases()
     }
 
@@ -110,8 +114,10 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
     }
 
     private fun renderCases(docs: List<DocumentSnapshot>) {
-        val pending = docs.filter { it.getString("estado") == "pendiente" }
-        val attending = docs.filter { it.getString("estado") == "en_atencion" }
+        caseDocs = docs
+        val open = docs.filter { SpeciesFilter.matches(it, speciesFilter) }
+        val pending = open.filter { it.getString("estado") == "pendiente" }
+        val attending = open.filter { it.getString("estado") == "en_atencion" }
 
         binding.tvCountPending.text = getString(R.string.professional_count_pending, pending.size)
         binding.tvCountAttending.text = getString(R.string.professional_count_attending, attending.size)
@@ -120,7 +126,7 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
 
         if (pending.isEmpty() && attending.isEmpty()) {
             val empty = TextView(this).apply {
-                text = getString(R.string.professional_no_cases)
+                text = getString(if (speciesFilter == null) R.string.professional_no_cases else R.string.species_filter_empty)
                 setTextColor(ContextCompat.getColor(this@BandejaProfesionalActivity, R.color.text_secondary))
                 textSize = 13.5f
             }

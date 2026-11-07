@@ -176,6 +176,10 @@
     <string name="pets_species_rodent">Roedor</string>
     <string name="pets_species_reptile">Reptil</string>
     <string name="species_detecting">Reconociendo el animal…</string>
+    <string name="species_manual">Categoría elegida: %1$s</string>
+    <string name="species_tap_to_change">Toca para cambiar</string>
+    <string name="species_tap_to_pick">Toca para elegir la categoría</string>
+    <string name="species_pick_title">¿Qué animal es?</string>
     <string name="species_detected">Categoría detectada: %1$s</string>
     <string name="species_detected_detail">Categoría detectada: %1$s (%2$s)</string>
     <string name="species_not_detected">No se pudo reconocer el animal en la foto</string>

@@ -33,6 +33,7 @@ class CasosResueltosActivity : BaseAccessibleActivity() {
     private var funcionarioEmail = ""
     private var all: List<DocumentSnapshot> = emptyList()
     private var loaded = false
+    private var speciesFilter: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +58,7 @@ class CasosResueltosActivity : BaseAccessibleActivity() {
         binding.chipGroupType.setOnCheckedStateChangeListener { _, _ -> render() }
         binding.chipGroupPeriod.setOnCheckedStateChangeListener { _, _ -> render() }
         binding.chipMine.setOnCheckedChangeListener { _, _ -> render() }
+        SpeciesFilter.setup(this, binding.speciesFilter.chipGroupSpecies) { speciesFilter = it; render() }
 
         binding.listContainer.showStatusMessage(getString(R.string.list_loading))
         // Sin orderBy: ordenar por fecha en el servidor pediría un índice; se ordena aquí.
@@ -120,13 +122,15 @@ class CasosResueltosActivity : BaseAccessibleActivity() {
         !binding.etSearch.text.isNullOrBlank() ||
             binding.chipGroupType.checkedChipId != R.id.chipTypeAll ||
             binding.chipGroupPeriod.checkedChipId != R.id.chipPeriodAll ||
-            binding.chipMine.isChecked
+            binding.chipMine.isChecked ||
+            speciesFilter != null
 
     private fun clearFilters() {
         binding.etSearch.setText("")
         binding.chipTypeAll.isChecked = true
         binding.chipPeriodAll.isChecked = true
         binding.chipMine.isChecked = false
+        SpeciesFilter.reset(binding.speciesFilter.chipGroupSpecies)
     }
 
     // ---------- Lista ----------
@@ -138,6 +142,7 @@ class CasosResueltosActivity : BaseAccessibleActivity() {
         val mine = binding.chipMine.isChecked
         val shown = all.filter { doc ->
             matchesType(doc) &&
+                SpeciesFilter.matches(doc, speciesFilter) &&
                 (start == null || resolvedAt(doc) >= start) &&
                 (!mine || doc.getString("atendidoPor").orEmpty().trim().lowercase() == funcionarioEmail) &&
                 matchesSearch(doc, tokens)
