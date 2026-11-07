@@ -135,7 +135,7 @@ class ComunitariosActivity : BaseAccessibleActivity() {
         }
 
         binding.tvInfo.text = when {
-            staff -> getString(R.string.comunitarios_info_staff, docs.count { it.getBoolean("activo") != false })
+            staff -> docs.count { it.getBoolean("activo") != false }.let { resources.getQuantityString(R.plurals.comunitarios_info_staff, it, it) }
             here != null && !showAll -> getString(R.string.comunitarios_info_near)
             here != null -> getString(R.string.comunitarios_info_all)
             else -> getString(R.string.comunitarios_info_no_location)

@@ -583,7 +583,10 @@
     <string name="comunitarios_info_near">Mostrando los que están a menos de 1 km de ti. Toca aquí para ver todos.</string>
     <string name="comunitarios_info_all">Mostrando todos, del más cercano al más lejano. Toca aquí para ver solo los cercanos.</string>
     <string name="comunitarios_info_no_location">Activa tu ubicación para ver cuáles están cerca de ti. Toca aquí para activarla.</string>
-    <string name="comunitarios_info_staff">%d animales comunitarios en la zona.</string>
+    <plurals name="comunitarios_info_staff">
+        <item quantity="one">%d animal comunitario en la zona.</item>
+        <item quantity="other">%d animales comunitarios en la zona.</item>
+    </plurals>
     <string name="comunitarios_empty">Todavía no hay animales comunitarios registrados.</string>
     <string name="comunitarios_empty_near">No hay animales comunitarios a menos de 1 km de ti.</string>
     <string name="comunitarios_distance_m">a %d m</string>
@@ -592,7 +595,7 @@
     <string name="comunitarios_no">No</string>
     <string name="comunitarios_gone">Ya no está</string>
     <string name="comunitarios_btn_add">Registrar animal comunitario</string>
-    <string name="comunitarios_btn_map">Ver en el mapa</string>
+    <string name="comunitarios_btn_map">Mapa</string>
     <string name="comunitarios_btn_health">Salud</string>
     <string name="comunitarios_btn_gone">Ya no está</string>
     <string name="comunitarios_btn_back">Volvió</string>
