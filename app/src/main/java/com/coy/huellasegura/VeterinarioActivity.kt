@@ -52,6 +52,8 @@ class VeterinarioActivity : BaseAccessibleActivity() {
 
         SpeciesFilter.setup(this, binding.speciesFilter.chipGroupSpecies) { speciesFilter = it; renderPets(petDocs) }
 
+        binding.btnExport.setOnClickListener { ExcelExport.askPeriod(this) { ExcelExport.exportPatients(this, it) } }
+
         checkOwnStatus()
         listenForPets()
     }

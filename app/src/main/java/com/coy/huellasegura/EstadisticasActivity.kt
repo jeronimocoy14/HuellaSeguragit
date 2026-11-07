@@ -14,7 +14,6 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.firestore
-import java.text.Normalizer
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -43,6 +42,7 @@ class EstadisticasActivity : BaseAccessibleActivity() {
         }
 
         binding.btnBack.setOnClickListener { finish() }
+        binding.btnExport.setOnClickListener { ExcelExport.askPeriod(this) { ExcelExport.exportFuncionario(this, it) } }
         binding.chipGroupPeriod.setOnCheckedStateChangeListener { _, _ -> render() }
         SpeciesFilter.setup(this, binding.speciesFilter.chipGroupSpecies) { speciesFilter = it; render() }
 
@@ -53,7 +53,7 @@ class EstadisticasActivity : BaseAccessibleActivity() {
         }
     }
 
-    private fun createdAt(doc: DocumentSnapshot): Long? = doc.getTimestamp("fechaCreacion")?.toDate()?.time
+    private fun createdAt(doc: DocumentSnapshot): Long? = ReportStats.createdAt(doc)
 
     private fun render() {
         val day = 24L * 60 * 60 * 1000
@@ -112,17 +112,7 @@ class EstadisticasActivity : BaseAccessibleActivity() {
         }
     }
 
-    private fun typeLabel(doc: DocumentSnapshot): String {
-        if (!doc.getString("perdidoId").isNullOrBlank()) return getString(R.string.resolved_filter_found)
-        val tipo = doc.getString("tipo").orEmpty().trim()
-        val known = listOf(R.string.report_type_hurt, R.string.report_type_abuse, R.string.report_type_hit)
-            .map { getString(it) }
-            .firstOrNull { normalize(it) == normalize(tipo) }
-        return known ?: getString(R.string.report_type_other)
-    }
-
-    private fun normalize(text: String): String =
-        Normalizer.normalize(text.lowercase(), Normalizer.Form.NFD).replace(Regex("\\p{M}+"), "")
+    private fun typeLabel(doc: DocumentSnapshot): String = ReportStats.typeLabel(this, doc)
 
     private fun renderTypes(list: List<DocumentSnapshot>) {
         binding.typeContainer.removeAllViews()
@@ -228,19 +218,7 @@ class EstadisticasActivity : BaseAccessibleActivity() {
         binding.weekChart.setData(starts.map { format.format(it).replace(".", "") to (counts[it] ?: 0) })
     }
 
-    private fun formatDuration(millis: Long): String {
-        val minutes = millis / 60000
-        val hours = minutes / 60
-        val days = hours / 24
-        return when {
-            minutes < 1 -> getString(R.string.stats_duration_lt_min)
-            hours < 1 -> getString(R.string.stats_duration_min, minutes.toInt())
-            days < 1 -> if (minutes % 60 == 0L) getString(R.string.stats_duration_h, hours.toInt())
-            else getString(R.string.stats_duration_h_min, hours.toInt(), (minutes % 60).toInt())
-            else -> if (hours % 24 == 0L) getString(R.string.stats_duration_d, days.toInt())
-            else getString(R.string.stats_duration_d_h, days.toInt(), (hours % 24).toInt())
-        }
-    }
+    private fun formatDuration(millis: Long): String = ReportStats.formatDuration(this, millis)
 
     override fun onDestroy() {
         listener?.remove()
