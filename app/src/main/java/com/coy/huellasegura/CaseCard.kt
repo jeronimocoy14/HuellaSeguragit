@@ -38,7 +38,8 @@ object CaseCard {
             else -> activity.getString(R.string.professional_no_location)
         }
         val time = timeText ?: doc.getTimestamp("fechaCreacion")?.let { relativeTime(activity, it.toDate().time) }.orEmpty()
-        item.tvCaseSubtitle.text = listOf(place, time, extra).filter { it.isNotBlank() }.joinToString(" · ")
+        val species = doc.getString("especie").orEmpty().let { if (it.isBlank()) "" else activity.getString(R.string.species_card, it) }
+        item.tvCaseSubtitle.text = listOf(place, time, extra, species).filter { it.isNotBlank() }.joinToString(" · ")
 
         if (hasCoordinates) {
             item.btnCaseMap.visibility = View.VISIBLE

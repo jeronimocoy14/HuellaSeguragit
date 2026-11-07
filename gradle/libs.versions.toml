@@ -10,6 +10,8 @@ activityKtx = "1.13.0"
 constraintlayout = "2.2.2"
 googleServices = "4.5.0"
 firebaseBom = "34.19.0"
+mlkitImageLabeling = "17.0.9"
+mlkitImageLabelingCustom = "17.0.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -24,6 +26,8 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
+mlkit-image-labeling = { group = "com.google.mlkit", name = "image-labeling", version.ref = "mlkitImageLabeling" }
+mlkit-image-labeling-custom = { group = "com.google.mlkit", name = "image-labeling-custom", version.ref = "mlkitImageLabelingCustom" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

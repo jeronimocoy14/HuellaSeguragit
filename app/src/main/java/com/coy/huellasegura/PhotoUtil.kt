@@ -60,6 +60,9 @@ object PhotoUtil {
         }.start()
     }
 
+    /** Foto reducida (lado largo de [maxSide] a 2×[maxSide] px) y bien girada, para analizarla. Bloquea: usar un hilo secundario. */
+    fun loadForAnalysis(context: Context, uri: Uri, maxSide: Int): Bitmap? = decodeSampled(context, uri, maxSide)
+
     /** Foto guardada en un archivo local (p. ej. la que tomó la cámara). Bloquea: usar un hilo secundario. */
     fun encodeFile(context: Context, path: String?): String? {
         if (path.isNullOrBlank()) return null

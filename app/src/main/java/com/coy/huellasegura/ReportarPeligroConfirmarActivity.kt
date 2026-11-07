@@ -99,6 +99,7 @@ class ReportarPeligroConfirmarActivity : BaseAccessibleActivity() {
             "fechaCreacion" to FieldValue.serverTimestamp()
         )
         if (photo != null) report["fotoBase64"] = photo
+        SpeciesDetector.recall(intent.getStringExtra(EXTRA_PHOTO_PATH))?.let { report.putAll(it.fields()) }
         if (!lat.isNaN() && !lon.isNaN()) {
             report["lat"] = lat
             report["lon"] = lon

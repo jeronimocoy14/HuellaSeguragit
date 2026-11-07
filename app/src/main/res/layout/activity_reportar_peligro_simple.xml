@@ -224,7 +224,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layerType="software"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="12dp">
 
                 <LinearLayout
                     android:id="@+id/photoPrompt"
@@ -288,6 +288,23 @@
                     android:scaleType="centerCrop"
                     android:visibility="gone" />
             </FrameLayout>
+
+            <TextView
+                android:id="@+id/tvSpecies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="-8dp"
+                android:background="@drawable/bg_icon_soft"
+                android:paddingStart="12dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="6dp"
+                android:textColor="@color/brand_dark"
+                android:textSize="13.5sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
 
             <TextView
                 android:layout_width="wrap_content"

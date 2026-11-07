@@ -33,6 +33,8 @@ class ReportarPeligroActivity : BaseAccessibleActivity(), TextToSpeech.OnInitLis
             binding.photoPreview.visibility = android.view.View.VISIBLE
             binding.photoPrompt.visibility = android.view.View.GONE
             photoPath = pendingPhotoFile?.absolutePath
+            val path = photoPath
+            SpeciesDetector.detectInto(this, pendingPhotoUri!!, binding.tvSpecies) { SpeciesDetector.remember(path, it) }
             Toast.makeText(this, R.string.report_photo_saved, Toast.LENGTH_SHORT).show()
         } else {
             pendingPhotoFile?.delete()

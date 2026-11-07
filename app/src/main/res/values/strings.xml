@@ -175,6 +175,11 @@
     <string name="pets_species_goat">Cabra</string>
     <string name="pets_species_rodent">Roedor</string>
     <string name="pets_species_reptile">Reptil</string>
+    <string name="species_detecting">Reconociendo el animal…</string>
+    <string name="species_detected">Categoría detectada: %1$s</string>
+    <string name="species_detected_detail">Categoría detectada: %1$s (%2$s)</string>
+    <string name="species_not_detected">No se pudo reconocer el animal en la foto</string>
+    <string name="species_card">Categoría: %1$s</string>
     <string name="pets_species_other">Otro</string>
     <string name="pets_add_title">Agregar mascota</string>
     <string name="pets_hint_name">Nombre de la mascota</string>

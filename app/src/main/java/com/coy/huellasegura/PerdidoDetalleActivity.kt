@@ -73,7 +73,11 @@ class PerdidoDetalleActivity : BaseAccessibleActivity() {
 
     private fun render(doc: DocumentSnapshot) {
         binding.tvNombre.text = doc.getString("nombre").orEmpty()
-        binding.tvDesc.text = doc.getString("descripcion").orEmpty()
+        val especie = doc.getString("especie").orEmpty()
+        binding.tvDesc.text = listOf(
+            doc.getString("descripcion").orEmpty(),
+            if (especie.isBlank()) "" else getString(R.string.species_card, especie),
+        ).filter { it.isNotBlank() }.joinToString("\n\n")
         binding.ivFoto.setImageBitmap(PhotoUtil.decode(doc.getString("fotoBase64"), doc.id))
 
         val mine = userEmail.isNotBlank() && doc.getString("reportanteCorreo") == userEmail

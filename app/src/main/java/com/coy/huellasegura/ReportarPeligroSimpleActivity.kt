@@ -36,6 +36,7 @@ class ReportarPeligroSimpleActivity : BaseAccessibleActivity(), TextToSpeech.OnI
     private var pendingPhotoFile: File? = null
     private var pendingPhotoUri: Uri? = null
     private var hasPhoto = false
+    private var detected: SpeciesDetector.Result? = null
     private var usingCurrentLocation = true
     private var lastLocation: Location? = null
     private var selectedType = ""
@@ -52,6 +53,8 @@ class ReportarPeligroSimpleActivity : BaseAccessibleActivity(), TextToSpeech.OnI
             binding.photoPreview.visibility = View.VISIBLE
             binding.photoPrompt.visibility = View.GONE
             hasPhoto = true
+            detected = null
+            SpeciesDetector.detectInto(this, pendingPhotoUri!!, binding.tvSpecies) { detected = it }
             updateSendButtonState()
             Toast.makeText(this, R.string.report_photo_saved, Toast.LENGTH_SHORT).show()
         } else {
@@ -238,6 +241,7 @@ class ReportarPeligroSimpleActivity : BaseAccessibleActivity(), TextToSpeech.OnI
             "reportanteNombre" to intent.getStringExtra(LoginActivity.EXTRA_USER_NAME).orEmpty(),
             "fechaCreacion" to FieldValue.serverTimestamp()
         )
+        detected?.let { report.putAll(it.fields()) }
         if (usingCurrentLocation && location != null) {
             report["lat"] = location.latitude
             report["lon"] = location.longitude

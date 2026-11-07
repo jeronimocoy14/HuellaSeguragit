@@ -32,6 +32,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    // Los modelos .tflite deben ir sin comprimir dentro del APK
+    androidResources {
+        noCompress += "tflite"
+    }
     buildFeatures {
         viewBinding = true
     }
@@ -47,6 +51,9 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.storage)
+    // Reconocimiento del animal en la foto: ambos modelos van dentro del APK y funcionan sin internet
+    implementation(libs.mlkit.image.labeling)
+    implementation(libs.mlkit.image.labeling.custom)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)

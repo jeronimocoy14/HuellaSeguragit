@@ -31,6 +31,7 @@ class ReportarPerdidoActivity : BaseAccessibleActivity() {
 
     private lateinit var binding: ActivityReportarPerdidoBinding
     private var photoBase64: String? = null
+    private var detected: SpeciesDetector.Result? = null
     private var pendingUri: Uri? = null
     private var pendingFile: File? = null
 
@@ -93,6 +94,8 @@ class ReportarPerdidoActivity : BaseAccessibleActivity() {
 
     private fun loadPhoto(uri: Uri) {
         binding.btnEnviar.isEnabled = false
+        detected = null
+        SpeciesDetector.detectInto(this, uri, binding.tvSpecies) { detected = it }
         Thread {
             val encoded = PhotoUtil.encode(this, uri)
             runOnUiThread {
@@ -145,7 +148,7 @@ class ReportarPerdidoActivity : BaseAccessibleActivity() {
             "reportanteCorreo" to email,
             "reportanteNombre" to intent.getStringExtra(LoginActivity.EXTRA_USER_NAME).orEmpty(),
             "fechaCreacion" to FieldValue.serverTimestamp()
-        )
+        ) + (detected?.fields() ?: emptyMap())
         OfflineWrite.run(
             this,
             Firebase.firestore.collection("perdidos").document().set(data),
