@@ -61,18 +61,23 @@ object ExcelExport {
             .addOnSuccessListener { reports ->
                 db.collection("perdidos").get()
                     .addOnSuccessListener { lost ->
-                        Thread {
-                            val result = runCatching {
-                                val since = since(period)
-                                val sheets = listOf(
-                                    summarySheet(activity, period, reports.documents.filter { inPeriod(it, since) }, lost.documents.filter { inPeriod(it, since) }),
-                                    reportsSheet(activity, reports.documents.filter { inPeriod(it, since) }),
-                                    lostSheet(activity, lost.documents.filter { inPeriod(it, since) }),
-                                )
-                                writeFile(activity, "resumen", sheets)
+                        db.collection("comunitarios").get()
+                            .addOnSuccessListener { community ->
+                                Thread {
+                                    val result = runCatching {
+                                        val since = since(period)
+                                        val sheets = listOf(
+                                            summarySheet(activity, period, reports.documents.filter { inPeriod(it, since) }, lost.documents.filter { inPeriod(it, since) }),
+                                            reportsSheet(activity, reports.documents.filter { inPeriod(it, since) }),
+                                            lostSheet(activity, lost.documents.filter { inPeriod(it, since) }),
+                                            communitySheet(activity, community.documents.filter { inPeriod(it, since) }),
+                                        )
+                                        writeFile(activity, "resumen", sheets)
+                                    }
+                                    activity.runOnUiThread { finish(activity, result) }
+                                }.start()
                             }
-                            activity.runOnUiThread { finish(activity, result) }
-                        }.start()
+                            .addOnFailureListener { fail(activity) }
                     }
                     .addOnFailureListener { fail(activity) }
             }
@@ -253,6 +258,36 @@ object ExcelExport {
             )
         }
         return XlsxWriter.Sheet(s(R.string.export_sheet_lost), rows)
+    }
+
+    private fun communitySheet(activity: Activity, animals: List<DocumentSnapshot>): XlsxWriter.Sheet {
+        fun s(id: Int) = activity.getString(id)
+        fun yesNo(value: Boolean?) = if (value == true) s(R.string.export_yes) else s(R.string.comunitarios_no)
+        val header = listOf(
+            R.string.export_col_date, R.string.export_col_name, R.string.export_col_category, R.string.export_col_reference,
+            R.string.export_col_address, R.string.export_col_lat, R.string.export_col_lon, R.string.comunitarios_sterilized,
+            R.string.comunitarios_vaccinated, R.string.export_col_state, R.string.export_col_care_note, R.string.export_col_registered_by_staff,
+        ).map { s(it) }
+        val rows = mutableListOf<List<Any?>>(header)
+        animals.sortedByDescending { it.createdAtMillis() }.forEach { doc ->
+            rows.add(
+                listOf(
+                    docDate(doc),
+                    doc.getString("nombre").orEmpty(),
+                    speciesOf(activity, doc).orEmpty(),
+                    doc.getString("referencia").orEmpty(),
+                    doc.getString("direccion").orEmpty(),
+                    doc.getDouble("lat"),
+                    doc.getDouble("lon"),
+                    yesNo(doc.getBoolean("esterilizado")),
+                    yesNo(doc.getBoolean("vacunado")),
+                    if (doc.getBoolean("activo") == false) s(R.string.comunitarios_gone) else s(R.string.export_comunitario_active),
+                    doc.getString("nota").orEmpty(),
+                    doc.getString("creadoPor").orEmpty(),
+                )
+            )
+        }
+        return XlsxWriter.Sheet(s(R.string.export_sheet_community), rows)
     }
 
     // ---------------------------------------------------------------- Veterinario

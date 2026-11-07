@@ -100,6 +100,13 @@
             android:name=".PerdidosModeracionActivity"
             android:exported="false" />
         <activity
+            android:name=".ComunitariosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AgregarComunitarioActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".MisReportesActivity"
             android:exported="false" />
         <activity

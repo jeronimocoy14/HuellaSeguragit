@@ -133,6 +133,18 @@ service cloud.firestore {
         || (signedIn() && resource.data.reportanteCorreo == myEmail());
     }
 
+    // ---------- Animales comunitarios ----------
+    // Los registra el personal (funcionario o veterinario); cualquier persona con sesión ve los que siguen en
+    // su zona (activo). Los que ya no están (activo == false) solo los ve el personal.
+    match /comunitarios/{animalId} {
+      allow read: if signedIn()
+        && (resource.data.activo == true || isFuncionario() || isVet());
+      allow create: if (isFuncionario() || isVet())
+        && request.resource.data.creadoPor == myEmail()
+        && request.resource.data.activo == true;
+      allow update, delete: if isFuncionario() || isVet();
+    }
+
     // ---------- Chat ciudadano - funcionario ----------
     match /chats/{chatId} {
       allow read, create, update: if signedIn() && (chatId == myEmail() || isFuncionario());

@@ -33,6 +33,8 @@ async function seed() {
     await setDoc(doc(db, 'perdidos', 'p1'), { nombre: 'Michi', reportanteCorreo: ANA, estado: 'publicado' });
     await setDoc(doc(db, 'perdidos', 'p2'), { nombre: 'Luna', reportanteCorreo: BOB, estado: 'pendiente' });
     await setDoc(doc(db, 'perdidos', 'p3'), { nombre: 'Fido', reportanteCorreo: BOB, estado: 'publicado' });
+    await setDoc(doc(db, 'comunitarios', 'c1'), { nombre: 'Canelo', especie: 'Perro', activo: true, creadoPor: FUNC });
+    await setDoc(doc(db, 'comunitarios', 'c2'), { nombre: 'Fantasma', especie: 'Gato', activo: false, creadoPor: FUNC });
     await setDoc(doc(db, 'chats', ANA), { ultimoMensaje: 'hola' });
     await setDoc(doc(db, 'chats/ana@x.com/mensajes', 'x1'), { texto: 'hola', remitente: 'ciudadano' });
     await setDoc(doc(db, 'chats', BOB), { ultimoMensaje: 'hey' });
@@ -192,6 +194,30 @@ await seed(); s('Funcionario');
   await t('perfiles de ciudadanos bloqueado', false, () => getDoc(doc(db, 'usuarios', ANA)));
   await t('no puede asignar roles', false, () => setDoc(doc(db, 'roles_profesionales', 'nuevo@x.com'), { rol: 'funcionario' }));
 }
+
+// ---------------- Animales comunitarios ----------------
+await seed(); s('Animales comunitarios');
+{ const sinSesion = anon(), ciudadano = as(ANA), vet = as(VET), func = as(FUNC);
+  const nuevo = (por) => ({ nombre: 'Luna', especie: 'Gato', activo: true, creadoPor: por, lat: 5.02, lon: -74.0 });
+  await t('sin sesión no los lee', false, () => getDocs(query(collection(sinSesion, 'comunitarios'), where('activo', '==', true))));
+  await t('ciudadano lee los activos (consulta)', true, () => getDocs(query(collection(ciudadano, 'comunitarios'), where('activo', '==', true))));
+  await t('ciudadano lee uno activo', true, () => getDoc(doc(ciudadano, 'comunitarios', 'c1')));
+  await t('ciudadano no lee uno que ya no está', false, () => getDoc(doc(ciudadano, 'comunitarios', 'c2')));
+  await t('ciudadano no lista todos (incluye inactivos)', false, () => getDocs(collection(ciudadano, 'comunitarios')));
+  await t('ciudadano no crea', false, () => addDoc(collection(ciudadano, 'comunitarios'), nuevo(ANA)));
+  await t('ciudadano no edita', false, () => updateDoc(doc(ciudadano, 'comunitarios', 'c1'), { vacunado: true }));
+  await t('ciudadano no borra', false, () => deleteDoc(doc(ciudadano, 'comunitarios', 'c1')));
+  await t('veterinario crea', true, () => addDoc(collection(vet, 'comunitarios'), nuevo(VET)));
+  await t('veterinario no crea a nombre de otro', false, () => addDoc(collection(vet, 'comunitarios'), nuevo(FUNC)));
+  await t('veterinario no crea uno ya inactivo', false, () => addDoc(collection(vet, 'comunitarios'), { ...nuevo(VET), activo: false }));
+  await t('veterinario marca vacunado', true, () => updateDoc(doc(vet, 'comunitarios', 'c1'), { vacunado: true }));
+  await t('veterinario ve los inactivos', true, () => getDoc(doc(vet, 'comunitarios', 'c2')));
+  await t('funcionario crea', true, () => addDoc(collection(func, 'comunitarios'), nuevo(FUNC)));
+  await t('funcionario lista todos', true, () => getDocs(collection(func, 'comunitarios')));
+  await t('funcionario marca «ya no está»', true, () => updateDoc(doc(func, 'comunitarios', 'c1'), { activo: false }));
+  await t('funcionario borra', true, () => deleteDoc(doc(func, 'comunitarios', 'c2')));
+}
+
 
 console.log(`\nRESULTADO: ${pass} correctas, ${fail} con fallo`);
 if (fail) console.log('Fallos:\n - ' + bad.join('\n - '));

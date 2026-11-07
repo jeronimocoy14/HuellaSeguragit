@@ -82,6 +82,19 @@
                 android:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnComunitarios"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/comunitarios_btn_staff"
+                android:textAllCaps="false"
+                android:textColor="@color/brand_dark"
+                android:textSize="14sp"
+                app:cornerRadius="12dp"
+                app:strokeColor="@color/field_border" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnExport"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="match_parent"

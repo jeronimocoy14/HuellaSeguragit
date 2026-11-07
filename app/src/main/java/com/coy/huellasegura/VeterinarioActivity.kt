@@ -52,6 +52,12 @@ class VeterinarioActivity : BaseAccessibleActivity() {
 
         SpeciesFilter.setup(this, binding.speciesFilter.chipGroupSpecies) { speciesFilter = it; renderPets(petDocs) }
 
+        binding.btnComunitarios.setOnClickListener {
+            startActivity(Intent(this, ComunitariosActivity::class.java).apply {
+                putExtra(ComunitariosActivity.EXTRA_STAFF, true)
+                putExtra(ProfileActivity.EXTRA_USER_EMAIL, vetEmail)
+            })
+        }
         binding.btnExport.setOnClickListener { ExcelExport.askPeriod(this) { ExcelExport.exportPatients(this, it) } }
 
         checkOwnStatus()

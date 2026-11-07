@@ -105,9 +105,40 @@ class MainDashboardActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListe
                 putExtra(ProfileActivity.EXTRA_USER_EMAIL, userEmail)
             })
         }
+        binding.cardCommunity.setOnClickListener {
+            startActivity(Intent(this, ComunitariosActivity::class.java).apply {
+                putExtra(LoginActivity.EXTRA_USER_NAME, userName)
+                putExtra(ProfileActivity.EXTRA_USER_EMAIL, userEmail)
+            })
+        }
         binding.cardMyReports.setOnClickListener(openMyReports)
         binding.tabReports.setOnClickListener(openMyReports)
         listenMyReportsCount(userEmail)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshCommunityCard()
+    }
+
+    /** Si ya dio el permiso de ubicación, la tarjeta dice cuántos animales comunitarios hay a menos de 1 km. */
+    private fun refreshCommunityCard() {
+        if (!LocationUtil.hasPermission(this)) return
+        LocationUtil.getCurrent(this) { here ->
+            if (here == null || isDestroyed) return@getCurrent
+            com.google.firebase.Firebase.firestore.collection("comunitarios").whereEqualTo("activo", true).get()
+                .addOnSuccessListener { snapshot ->
+                    if (isDestroyed) return@addOnSuccessListener
+                    val near = snapshot.documents.count { doc ->
+                        val lat = doc.getDouble("lat")
+                        val lon = doc.getDouble("lon")
+                        lat != null && lon != null &&
+                            Comunitarios.distanceMeters(here.latitude, here.longitude, lat, lon) <= Comunitarios.RADIUS_METERS
+                    }
+                    binding.tvCommunitySubtitle.text =
+                        if (near == 0) getString(R.string.comunitarios_card_none_near) else getString(R.string.comunitarios_card_near, near)
+                }
+        }
     }
 
     private fun listenMyReportsCount(email: String?) {
