@@ -71,6 +71,9 @@ object SpeciesDetector {
         label.text = activity.getString(R.string.species_detecting)
         label.setOnClickListener(null)
         label.isClickable = false
+        // Si se cambia la foto mientras la anterior aún se analiza, el resultado viejo no debe pisar al nuevo.
+        val ticket = Any()
+        label.tag = ticket
 
         fun show(result: Result?) {
             val hint = activity.getString(if (result == null) R.string.species_tap_to_pick else R.string.species_tap_to_change)
@@ -78,7 +81,7 @@ object SpeciesDetector {
         }
 
         detect(activity, uri) { result ->
-            if (activity.isDestroyed || activity.isFinishing) return@detect
+            if (activity.isDestroyed || activity.isFinishing || label.tag !== ticket) return@detect
             show(result)
             onResult(result)
             label.setOnClickListener {
