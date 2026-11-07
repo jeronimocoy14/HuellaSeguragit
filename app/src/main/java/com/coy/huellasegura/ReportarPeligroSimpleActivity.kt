@@ -49,17 +49,46 @@ class ReportarPeligroSimpleActivity : BaseAccessibleActivity(), TextToSpeech.OnI
 
     private val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success && pendingPhotoUri != null) {
-            PhotoUtil.loadPreview(this, pendingPhotoUri!!) { bitmap -> bitmap?.let { binding.photoPreview.setImageBitmap(it) } }
-            binding.photoPreview.visibility = View.VISIBLE
-            binding.photoPrompt.visibility = View.GONE
-            hasPhoto = true
-            detected = null
-            SpeciesDetector.detectInto(this, pendingPhotoUri!!, binding.tvSpecies) { detected = it }
-            updateSendButtonState()
-            Toast.makeText(this, R.string.report_photo_saved, Toast.LENGTH_SHORT).show()
+            showPhoto(pendingPhotoUri!!)
         } else {
             pendingPhotoFile?.delete()
         }
+    }
+
+    private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri == null) return@registerForActivityResult
+        // La foto de la galería se copia a un archivo propio para que siga el mismo camino que la de la cámara.
+        Thread {
+            val file = PhotoUtil.copyToReports(this, uri)
+            runOnUiThread {
+                if (file == null) {
+                    Toast.makeText(this, R.string.report_photo_error, Toast.LENGTH_SHORT).show()
+                } else {
+                    pendingPhotoFile = file
+                    pendingPhotoUri = Uri.fromFile(file)
+                    showPhoto(pendingPhotoUri!!)
+                }
+            }
+        }.start()
+    }
+
+    private fun showPhoto(uri: Uri) {
+        PhotoUtil.loadPreview(this, uri) { bitmap -> bitmap?.let { binding.photoPreview.setImageBitmap(it) } }
+        binding.photoPreview.visibility = View.VISIBLE
+        binding.photoPrompt.visibility = View.GONE
+        hasPhoto = true
+        detected = null
+        SpeciesDetector.detectInto(this, uri, binding.tvSpecies) { detected = it }
+        updateSendButtonState()
+        Toast.makeText(this, R.string.report_photo_saved, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun chooseSource() {
+        val options = arrayOf(getString(R.string.perdidos_photo_take), getString(R.string.perdidos_photo_gallery))
+        styledDialog()
+            .setTitle(R.string.report_photo_source_title)
+            .setItems(options) { _, which -> if (which == 0) launchCamera() else pickImage.launch("image/*") }
+            .show()
     }
 
     private val requestLocationPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
@@ -98,8 +127,8 @@ class ReportarPeligroSimpleActivity : BaseAccessibleActivity(), TextToSpeech.OnI
 
         binding.btnBack.setOnClickListener { finish() }
 
-        binding.photoPrompt.setOnClickListener { launchCamera() }
-        binding.photoPreview.setOnClickListener { launchCamera() }
+        binding.photoPrompt.setOnClickListener { chooseSource() }
+        binding.photoPreview.setOnClickListener { chooseSource() }
 
         binding.locCurrent.setOnClickListener { selectCurrentLocation() }
         binding.locAddress.setOnClickListener { selectAddressLocation() }

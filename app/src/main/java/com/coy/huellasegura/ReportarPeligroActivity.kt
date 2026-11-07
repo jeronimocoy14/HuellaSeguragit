@@ -29,16 +29,45 @@ class ReportarPeligroActivity : BaseAccessibleActivity(), TextToSpeech.OnInitLis
 
     private val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success && pendingPhotoUri != null) {
-            PhotoUtil.loadPreview(this, pendingPhotoUri!!) { bitmap -> bitmap?.let { binding.photoPreview.setImageBitmap(it) } }
-            binding.photoPreview.visibility = android.view.View.VISIBLE
-            binding.photoPrompt.visibility = android.view.View.GONE
-            photoPath = pendingPhotoFile?.absolutePath
-            val path = photoPath
-            SpeciesDetector.detectInto(this, pendingPhotoUri!!, binding.tvSpecies) { SpeciesDetector.remember(path, it) }
-            Toast.makeText(this, R.string.report_photo_saved, Toast.LENGTH_SHORT).show()
+            showPhoto(pendingPhotoUri!!)
         } else {
             pendingPhotoFile?.delete()
         }
+    }
+
+    private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri == null) return@registerForActivityResult
+        // La foto de la galería se copia a un archivo propio para que siga el mismo camino que la de la cámara.
+        Thread {
+            val file = PhotoUtil.copyToReports(this, uri)
+            runOnUiThread {
+                if (file == null) {
+                    Toast.makeText(this, R.string.report_photo_error, Toast.LENGTH_SHORT).show()
+                } else {
+                    pendingPhotoFile = file
+                    pendingPhotoUri = android.net.Uri.fromFile(file)
+                    showPhoto(pendingPhotoUri!!)
+                }
+            }
+        }.start()
+    }
+
+    private fun showPhoto(uri: android.net.Uri) {
+        PhotoUtil.loadPreview(this, uri) { bitmap -> bitmap?.let { binding.photoPreview.setImageBitmap(it) } }
+        binding.photoPreview.visibility = android.view.View.VISIBLE
+        binding.photoPrompt.visibility = android.view.View.GONE
+        photoPath = pendingPhotoFile?.absolutePath
+        val path = photoPath
+        SpeciesDetector.detectInto(this, uri, binding.tvSpecies) { SpeciesDetector.remember(path, it) }
+        Toast.makeText(this, R.string.report_photo_saved, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun chooseSource() {
+        val options = arrayOf(getString(R.string.perdidos_photo_take), getString(R.string.perdidos_photo_gallery))
+        styledDialog()
+            .setTitle(R.string.report_photo_source_title)
+            .setItems(options) { _, which -> if (which == 0) launchCamera() else pickImage.launch("image/*") }
+            .show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,9 +88,8 @@ class ReportarPeligroActivity : BaseAccessibleActivity(), TextToSpeech.OnInitLis
 
         binding.btnBack.setOnClickListener { finish() }
 
-        val launchCamera = { launchCamera() }
-        binding.photoPrompt.setOnClickListener { launchCamera() }
-        binding.photoPreview.setOnClickListener { launchCamera() }
+        binding.photoPrompt.setOnClickListener { chooseSource() }
+        binding.photoPreview.setOnClickListener { chooseSource() }
 
         binding.btnContinuar.setOnClickListener {
             val selectedChipId = binding.chipGroupType.checkedChipId

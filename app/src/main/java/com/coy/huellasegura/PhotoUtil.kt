@@ -60,6 +60,23 @@ object PhotoUtil {
         }.start()
     }
 
+    /**
+     * Copia una foto elegida de la galería a un archivo propio de la app (carpeta de reportes), para que siga el mismo
+     * camino que las fotos de la cámara. Bloquea: usar un hilo secundario. Devuelve null si no se pudo leer.
+     */
+    fun copyToReports(context: Context, uri: Uri): java.io.File? = try {
+        val dir = java.io.File(context.getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES), "reports").apply { mkdirs() }
+        val stamp = java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.US).format(java.util.Date())
+        val file = java.io.File(dir, "galeria_$stamp.jpg")
+        val copied = context.contentResolver.openInputStream(uri)?.use { input ->
+            file.outputStream().use { output -> input.copyTo(output) }
+            true
+        } ?: false
+        if (copied && file.length() > 0L) file else { file.delete(); null }
+    } catch (e: Exception) {
+        null
+    }
+
     /** Foto reducida (lado largo de [maxSide] a 2×[maxSide] px) y bien girada, para analizarla. Bloquea: usar un hilo secundario. */
     fun loadForAnalysis(context: Context, uri: Uri, maxSide: Int): Bitmap? = decodeSampled(context, uri, maxSide)
 
