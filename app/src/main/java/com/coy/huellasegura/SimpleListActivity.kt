@@ -369,7 +369,7 @@ class SimpleListActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListener
     override fun onInit(status: Int) {
         ttsReady = status == TextToSpeech.SUCCESS
         if (ttsReady) {
-            tts?.language = Locale("es", "ES")
+            SpanishVoice.apply(tts)
             pendingSpeech?.let { speak(it) }
             pendingSpeech = null
         }

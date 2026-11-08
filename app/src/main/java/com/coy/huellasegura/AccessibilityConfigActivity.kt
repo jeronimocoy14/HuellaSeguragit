@@ -99,7 +99,7 @@ class AccessibilityConfigActivity : BaseAccessibleActivity(), TextToSpeech.OnIni
     override fun onInit(status: Int) {
         ttsReady = status == TextToSpeech.SUCCESS
         if (ttsReady) {
-            tts?.language = Locale("es", "ES")
+            SpanishVoice.apply(tts)
             if (binding.switchTts.isChecked) {
                 speak(getString(R.string.accessibility_description))
             }

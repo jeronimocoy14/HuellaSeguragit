@@ -164,7 +164,7 @@ class ReportarPeligroUbicacionActivity : BaseAccessibleActivity(), TextToSpeech.
 
     override fun onInit(status: Int) {
         ttsReady = status == TextToSpeech.SUCCESS
-        if (ttsReady) tts?.language = Locale("es", "ES")
+        if (ttsReady) SpanishVoice.apply(tts)
     }
 
     private fun readScreenAloud() {

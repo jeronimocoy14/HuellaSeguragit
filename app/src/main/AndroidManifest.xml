@@ -6,6 +6,10 @@
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE" />
         </intent>
+        <!-- Android 11 o más: sin esto la app no ve el motor de voz y la lectura en voz alta no arranca. -->
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
     </queries>
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

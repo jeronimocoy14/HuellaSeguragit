@@ -91,7 +91,7 @@ class HomeSeniorActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListener
     override fun onInit(status: Int) {
         ttsReady = status == TextToSpeech.SUCCESS
         if (ttsReady) {
-            tts?.language = Locale("es", "ES")
+            SpanishVoice.apply(tts)
             if (pendingReadAloud) {
                 pendingReadAloud = false
                 readScreenAloud()
