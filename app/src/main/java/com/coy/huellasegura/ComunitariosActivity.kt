@@ -63,6 +63,8 @@ class ComunitariosActivity : BaseAccessibleActivity() {
         SpeciesFilter.setup(this, binding.speciesFilter.chipGroupSpecies) { speciesFilter = it; render() }
 
         if (staff) {
+            binding.btnMap.visibility = View.VISIBLE
+            binding.btnMap.setOnClickListener { startActivity(Intent(this, MapaComunitariosActivity::class.java)) }
             binding.btnAdd.visibility = View.VISIBLE
             binding.btnAdd.setOnClickListener {
                 startActivity(Intent(this, AgregarComunitarioActivity::class.java).apply {
@@ -201,24 +203,11 @@ class ComunitariosActivity : BaseAccessibleActivity() {
                 runCatching { startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse(GeoUtil.mapsUrl(lat!!, lon!!)))) }
                     .onFailure { Toast.makeText(this, R.string.report_send_error, Toast.LENGTH_SHORT).show() }
             }
-            item.btnSalud.setOnClickListener { editHealth(doc) }
+            item.btnSalud.setOnClickListener { Comunitarios.editHealth(this, doc) }
             item.btnEstado.setText(if (active) R.string.comunitarios_btn_gone else R.string.comunitarios_btn_back)
             item.btnEstado.setOnClickListener { if (active) confirmGone(doc) else setActive(doc, true) }
         }
         binding.listContainer.addView(item.root)
-    }
-
-    private fun editHealth(doc: DocumentSnapshot) {
-        val labels = arrayOf(getString(R.string.comunitarios_sterilized), getString(R.string.comunitarios_vaccinated))
-        val checked = booleanArrayOf(doc.getBoolean("esterilizado") == true, doc.getBoolean("vacunado") == true)
-        styledDialog()
-            .setTitle(getString(R.string.comunitarios_health_title, doc.getString("nombre").orEmpty()))
-            .setMultiChoiceItems(labels, checked) { _, which, isChecked -> checked[which] = isChecked }
-            .setNegativeButton(R.string.btn_cancelar, null)
-            .setPositiveButton(R.string.comunitarios_save) { _, _ ->
-                OfflineWrite.notify(this, doc.reference.update(mapOf("esterilizado" to checked[0], "vacunado" to checked[1])))
-            }
-            .show()
     }
 
     private fun confirmGone(doc: DocumentSnapshot) {

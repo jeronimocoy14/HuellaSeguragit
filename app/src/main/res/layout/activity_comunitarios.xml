@@ -88,6 +88,26 @@
     </ScrollView>
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnMap"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/mapcom_open"
+        android:textAllCaps="false"
+        android:textColor="@color/brand_dark"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:cornerRadius="14dp"
+        app:icon="@drawable/ic_location_pin"
+        app:iconGravity="textStart"
+        app:iconTint="@color/brand_dark"
+        app:strokeColor="@color/field_border" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnAdd"
         android:layout_width="match_parent"
         android:layout_height="56dp"

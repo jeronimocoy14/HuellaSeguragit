@@ -22,6 +22,32 @@ object Comunitarios {
         return r * 2 * atan2(sqrt(a), sqrt(1 - a))
     }
 
+    enum class Health { COMPLETE, PARTIAL, NONE }
+
+    /** Cuánto le falta a un animal: esterilizado y vacunado (completo), uno de los dos (parcial) o ninguno. */
+    fun healthOf(doc: com.google.firebase.firestore.DocumentSnapshot): Health {
+        val done = listOf(doc.getBoolean("esterilizado") == true, doc.getBoolean("vacunado") == true).count { it }
+        return when (done) {
+            2 -> Health.COMPLETE
+            1 -> Health.PARTIAL
+            else -> Health.NONE
+        }
+    }
+
+    /** Diálogo para marcar si el animal está esterilizado y vacunado; guarda con la misma lógica sin conexión de la app. */
+    fun editHealth(activity: android.app.Activity, doc: com.google.firebase.firestore.DocumentSnapshot) {
+        val labels = arrayOf(activity.getString(R.string.comunitarios_sterilized), activity.getString(R.string.comunitarios_vaccinated))
+        val checked = booleanArrayOf(doc.getBoolean("esterilizado") == true, doc.getBoolean("vacunado") == true)
+        activity.styledDialog()
+            .setTitle(activity.getString(R.string.comunitarios_health_title, doc.getString("nombre").orEmpty()))
+            .setMultiChoiceItems(labels, checked) { _, which, isChecked -> checked[which] = isChecked }
+            .setNegativeButton(R.string.btn_cancelar, null)
+            .setPositiveButton(R.string.comunitarios_save) { _, _ ->
+                OfflineWrite.notify(activity, doc.reference.update(mapOf("esterilizado" to checked[0], "vacunado" to checked[1])))
+            }
+            .show()
+    }
+
     /** Distancia de la persona a un animal comunitario, o null si no hay ubicación de alguno de los dos. */
     fun distanceTo(doc: com.google.firebase.firestore.DocumentSnapshot, here: android.location.Location?): Double? {
         val me = here ?: return null

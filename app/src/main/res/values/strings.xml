@@ -665,4 +665,13 @@
     <string name="map_offline">El mapa necesita internet. Mientras tanto puedes seguir usando la bandeja de reportes.</string>
     <string name="map_btn_chat">Chat</string>
     <string name="map_btn_route">Cómo llegar</string>
+    <string name="mapcom_title">Mapa de animales comunitarios</string>
+    <string name="mapcom_open">Ver todos en el mapa</string>
+    <string name="mapcom_filter_no_sterilized">Sin esterilizar</string>
+    <string name="mapcom_filter_no_vaccinated">Sin vacunar</string>
+    <string name="mapcom_filter_complete">Completos</string>
+    <string name="mapcom_state_complete">Completo</string>
+    <string name="mapcom_state_partial">Le falta uno</string>
+    <string name="mapcom_state_pending">Sin esterilizar ni vacunar</string>
+    <string name="map_offline_list">El mapa necesita internet. Mientras tanto puedes ver la lista de animales.</string>
 </resources>
