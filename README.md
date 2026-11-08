@@ -12,6 +12,9 @@ App Android (Kotlin, vistas XML) de la Alcaldía de Zipaquirá para el bienestar
 - **Mascotas** que registra el veterinario y acepta el dueño, con historial clínico.
 - **Categoría del animal por foto**: un modelo que corre dentro del teléfono (ML Kit + EfficientNet, sin internet) sugiere la categoría (perro, gato, ave, caballo, vaca...) y la persona puede corregirla. Hay filtros por categoría en varias pantallas.
 - **Animales comunitarios**: el personal registra los animales que cuida todo el barrio; cada ciudadano ve los que están a menos de 1 km (con la distancia y una referencia, sin el punto exacto).
+- **Mapas para el personal** (necesitan internet; usan Leaflet + OpenStreetMap, sin claves de Google):
+  - *Mapa de reportes* (funcionario): un punto por reporte con ubicación, de color según el estado, con filtros por estado, período y categoría, y tarjeta con «Tomar caso», chat y cómo llegar.
+  - *Mapa de animales comunitarios* (funcionario y veterinario): un punto por animal, de color según si está esterilizado y vacunado; sirve para planear campañas por zona.
 - **Exportar a Excel** (última semana, último mes o todo): resumen y reportes para el funcionario, pacientes para el veterinario.
 - **Modos de ayuda**: texto grande, tema claro/oscuro/automático, alto contraste, modo para daltonismo, modo con dibujos, lectura en voz alta y un modo simplificado con listas grandes y botón «Escuchar».
 
