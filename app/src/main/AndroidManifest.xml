@@ -103,6 +103,9 @@
             android:name=".ComunitariosActivity"
             android:exported="false" />
         <activity
+            android:name=".SimpleListActivity"
+            android:exported="false" />
+        <activity
             android:name=".AgregarComunitarioActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />

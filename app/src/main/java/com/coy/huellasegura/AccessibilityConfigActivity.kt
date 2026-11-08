@@ -206,7 +206,7 @@ class AccessibilityConfigActivity : BaseAccessibleActivity(), TextToSpeech.OnIni
         binding.switchDrawings.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean(KEY_DRAWINGS, isChecked).apply()
             if (isChecked) {
-                Toast.makeText(this, "Usaremos más íconos y audio en toda la app", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Los estados ahora llevan un dibujo", Toast.LENGTH_SHORT).show()
             }
             speak(if (isChecked) "Modo con dibujos y voz activado" else "Modo con dibujos y voz desactivado")
         }

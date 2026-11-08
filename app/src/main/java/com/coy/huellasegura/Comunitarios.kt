@@ -22,6 +22,14 @@ object Comunitarios {
         return r * 2 * atan2(sqrt(a), sqrt(1 - a))
     }
 
+    /** Distancia de la persona a un animal comunitario, o null si no hay ubicación de alguno de los dos. */
+    fun distanceTo(doc: com.google.firebase.firestore.DocumentSnapshot, here: android.location.Location?): Double? {
+        val me = here ?: return null
+        val lat = doc.getDouble("lat") ?: return null
+        val lon = doc.getDouble("lon") ?: return null
+        return distanceMeters(me.latitude, me.longitude, lat, lon)
+    }
+
     /** «a 450 m» o «a 1,2 km» (se redondea de 50 en 50 m: no hace falta más precisión). */
     fun formatDistance(context: Context, meters: Double): String =
         if (meters < 1000) context.getString(R.string.comunitarios_distance_m, (Math.round(meters / 50.0) * 50).toInt().coerceAtLeast(50))

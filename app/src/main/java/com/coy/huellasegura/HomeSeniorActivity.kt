@@ -67,12 +67,14 @@ class HomeSeniorActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListener
             })
         }
 
-        binding.btnMyPets.setOnClickListener {
-            startActivity(Intent(this, MisMascotasActivity::class.java).apply {
-                putExtra(LoginActivity.EXTRA_USER_NAME, userName)
-                putExtra(ProfileActivity.EXTRA_USER_EMAIL, userEmail)
-            })
-        }
+        fun openList(kind: String) = startActivity(Intent(this, SimpleListActivity::class.java).apply {
+            putExtra(SimpleListActivity.EXTRA_KIND, kind)
+            putExtra(LoginActivity.EXTRA_USER_NAME, userName)
+            putExtra(ProfileActivity.EXTRA_USER_EMAIL, userEmail)
+        })
+        binding.btnMyPets.setOnClickListener { openList(SimpleListActivity.KIND_PETS) }
+        binding.btnLost.setOnClickListener { openList(SimpleListActivity.KIND_LOST) }
+        binding.btnCommunity.setOnClickListener { openList(SimpleListActivity.KIND_COMMUNITY) }
 
         binding.btnChatVet.setOnClickListener {
             startActivity(Intent(this, ChatActivity::class.java).apply {
@@ -83,12 +85,7 @@ class HomeSeniorActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListener
             })
         }
 
-        binding.btnMyReports.setOnClickListener {
-            startActivity(Intent(this, MisReportesActivity::class.java).apply {
-                putExtra(LoginActivity.EXTRA_USER_NAME, userName)
-                putExtra(ProfileActivity.EXTRA_USER_EMAIL, userEmail)
-            })
-        }
+        binding.btnMyReports.setOnClickListener { openList(SimpleListActivity.KIND_REPORTS) }
     }
 
     override fun onInit(status: Int) {
@@ -110,7 +107,8 @@ class HomeSeniorActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListener
         }
         val text = "${binding.tvHello.text}. ${getString(R.string.senior_mode_active)}. " +
             "${getString(R.string.senior_report_title).replace("\n", " ")}. " +
-            "${getString(R.string.senior_chat_vet_title)}. ${getString(R.string.senior_my_reports_title)}. " +
+            "${getString(R.string.senior_chat_vet_title)}. ${getString(R.string.senior_lost_title)}. " +
+            "${getString(R.string.senior_community_title)}. ${getString(R.string.senior_my_reports_title)}. " +
             getString(R.string.senior_my_pets_title)
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
     }

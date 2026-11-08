@@ -32,7 +32,7 @@
     <string name="tts_title">Leer en voz alta</string>
     <string name="tts_subtitle">La app lee los textos en voz alta</string>
     <string name="drawings_title">Modo con dibujos y voz</string>
-    <string name="drawings_subtitle">Ideal si prefieres no leer: todo con imágenes y audio</string>
+    <string name="drawings_subtitle">Los estados llevan un dibujo, no solo un color; en el modo simplificado cada tarjeta se puede escuchar</string>
     <string name="simplified_title">Modo simplificado</string>
     <string name="simplified_subtitle">Botones grandes y menos pasos para reportar</string>
     <string name="btn_guardar_continuar">Guardar y continuar</string>
@@ -638,4 +638,22 @@
     <string name="theme_auto">Automático</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
+    <string name="senior_lost_title">Animales perdidos o encontrados</string>
+    <string name="senior_community_title">Animales del barrio</string>
+    <string name="simple_listen">Escuchar</string>
+    <string name="simple_title_reports">Mis reportes</string>
+    <string name="simple_hint_reports">Así van los reportes que hiciste.</string>
+    <string name="simple_title_pets">Mis animales</string>
+    <string name="simple_hint_pets">Toca un animal para ver su historia.</string>
+    <string name="simple_title_lost">Perdidos y encontrados</string>
+    <string name="simple_hint_lost">Toca un animal para ver más o avisar si lo viste.</string>
+    <string name="simple_title_community">Animales del barrio</string>
+    <string name="simple_hint_community">Los que cuida todo el barrio, a menos de 1 km de ti.</string>
+    <string name="simple_action_report">Reportar un animal en peligro</string>
+    <string name="simple_action_lost">Reportar un animal perdido</string>
+    <string name="simple_pet_question">¿%1$s es tu animal?</string>
+    <string name="simple_pet_yes">Sí, es mío</string>
+    <string name="simple_pet_no">No es mío</string>
+    <string name="simple_pet_reject_title">¿%1$s no es tu animal?</string>
+    <string name="simple_pet_reject_message">Se quitará de tu lista y el veterinario lo verá como rechazado.</string>
 </resources>
