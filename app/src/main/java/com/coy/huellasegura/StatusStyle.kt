@@ -52,6 +52,18 @@ object StatusStyle {
         }
     }
 
+    /** Color de un punto del mapa para un estado: rojo / ámbar / verde, o la paleta del modo para daltonismo. */
+    fun markerColor(context: Context, kind: Kind): Int {
+        if (colorblindMode(context) != "Ninguno") return palette(context, kind).bg
+        return Color.parseColor(
+            when (kind) {
+                Kind.DANGER -> "#B23B2E"
+                Kind.WAITING -> "#E0A526"
+                Kind.OK -> "#2F7A4E"
+            }
+        )
+    }
+
     private fun iconFor(kind: Kind) = when (kind) {
         Kind.OK -> R.drawable.ic_status_ok
         Kind.WAITING -> R.drawable.ic_status_wait

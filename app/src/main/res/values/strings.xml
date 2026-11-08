@@ -656,4 +656,13 @@
     <string name="simple_pet_no">No es mío</string>
     <string name="simple_pet_reject_title">¿%1$s no es tu animal?</string>
     <string name="simple_pet_reject_message">Se quitará de tu lista y el veterinario lo verá como rechazado.</string>
+    <string name="map_title">Mapa de reportes</string>
+    <string name="map_card_title">Mapa de reportes</string>
+    <string name="map_card_subtitle">Dónde están los casos, con filtros</string>
+    <string name="map_filter_all">Todos</string>
+    <string name="map_info">%1$d en el mapa</string>
+    <string name="map_info_with_missing">%1$d en el mapa · %2$d sin ubicación</string>
+    <string name="map_offline">El mapa necesita internet. Mientras tanto puedes seguir usando la bandeja de reportes.</string>
+    <string name="map_btn_chat">Chat</string>
+    <string name="map_btn_route">Cómo llegar</string>
 </resources>

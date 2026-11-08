@@ -68,6 +68,12 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
         }
         listenForResolved()
 
+        binding.cardMapa.setOnClickListener {
+            startActivity(Intent(this, MapaReportesActivity::class.java).apply {
+                putExtra(ProfileActivity.EXTRA_USER_EMAIL, intent.getStringExtra(ProfileActivity.EXTRA_USER_EMAIL))
+            })
+        }
+
         binding.cardComunitarios.setOnClickListener {
             startActivity(Intent(this, ComunitariosActivity::class.java).apply {
                 putExtra(ComunitariosActivity.EXTRA_STAFF, true)
