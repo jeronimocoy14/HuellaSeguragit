@@ -66,4 +66,14 @@ npm test
 
 ## Cuentas de prueba
 
-No hay cuentas de prueba en el repositorio. Para probar los roles profesionales, crea la cuenta desde la app y agrega su correo (en minúsculas) en `roles_profesionales` con el campo `rol`.
+El equipo usa tres cuentas para probar cada rol (la contraseña no se publica aquí; la sabe el equipo):
+
+| Rol | Correo |
+|---|---|
+| Ciudadano | `ciudadano@gmail.com` |
+| Funcionario | `funcionario@gmail.com` |
+| Veterinario | `veterinario@gmail.com` |
+
+Ciudadano es una cuenta normal. Funcionario y veterinario tienen su documento en `roles_profesionales/{correo}` (el ID es el correo exacto, en minúsculas) con `rol: funcionario` o `rol: veterinario`; esos documentos solo se crean desde la consola de Firebase. Para otra cuenta con permisos de personal: créala en Authentication y agrega su documento de rol.
+
+**Antes de usar la app con personas reales**, borra o cambia la contraseña de las cuentas de prueba de funcionario y veterinario.
