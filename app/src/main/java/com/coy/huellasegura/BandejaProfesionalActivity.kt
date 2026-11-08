@@ -154,13 +154,13 @@ class BandejaProfesionalActivity : BaseAccessibleActivity() {
 
         if (isPending) {
             item.btnCaseAction.text = getString(R.string.professional_btn_take_case)
-            item.btnCaseAction.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.brand_dark))
-            item.btnCaseAction.setTextColor(ContextCompat.getColor(this, android.R.color.white))
+            item.btnCaseAction.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.brand_fill))
+            item.btnCaseAction.setTextColor(ContextCompat.getColor(this, R.color.on_fill))
             item.btnCaseAction.strokeWidth = 0
             item.btnCaseAction.setOnClickListener { takeCase(doc) }
         } else {
             item.btnCaseAction.text = getString(R.string.professional_btn_resolve)
-            item.btnCaseAction.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, android.R.color.white))
+            item.btnCaseAction.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.surface_card))
             item.btnCaseAction.setTextColor(ContextCompat.getColor(this, R.color.text_primary))
             item.btnCaseAction.strokeWidth = dp(1.5f)
             item.btnCaseAction.setStrokeColorResource(R.color.field_border)

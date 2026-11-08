@@ -2,7 +2,6 @@ package com.coy.huellasegura
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -10,7 +9,7 @@ import com.coy.huellasegura.databinding.ActivityProfileBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity : BaseAccessibleActivity() {
 
     companion object {
         const val EXTRA_IS_PROFESSIONAL = "extra_is_professional"

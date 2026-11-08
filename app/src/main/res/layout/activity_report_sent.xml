@@ -4,7 +4,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/brand_dark"
+    android:background="@color/brand_fill"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="32dp">
@@ -22,7 +22,7 @@
         android:gravity="center"
         android:id="@+id/tvTitle"
         android:text="@string/report_sent_title"
-        android:textColor="@android:color/white"
+        android:textColor="@color/on_fill"
         android:textSize="26sp"
         android:textStyle="bold" />
 
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="40dp"
-        android:backgroundTint="@android:color/white"
+        android:backgroundTint="@color/surface_card"
         android:text="@string/btn_aceptar"
         android:textAllCaps="false"
         android:textColor="@color/brand_dark"

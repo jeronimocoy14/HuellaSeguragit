@@ -129,8 +129,14 @@ class MisReportesActivity : BaseAccessibleActivity() {
         // Escrito sin internet y aún sin confirmar por el servidor.
         val unsent = doc.metadata.hasPendingWrites()
         item.tvPill.setText(if (unsent) R.string.reports_status_unsent else label)
-        item.tvPill.setBackgroundResource(if (unsent) R.drawable.bg_pill_pending else pillBg)
-        item.tvPill.setTextColor(ContextCompat.getColor(this, if (unsent) R.color.offline_notice_text else pillText))
+        StatusStyle.apply(
+            item.tvPill,
+            when {
+                unsent -> StatusStyle.Kind.WAITING
+                estado == "resuelto" || estado == "en_atencion" -> StatusStyle.Kind.OK
+                else -> StatusStyle.Kind.WAITING
+            }
+        )
         item.tvDetalle.visibility = View.VISIBLE
         item.tvDetalle.setText(if (unsent) R.string.reports_detail_unsent else detail)
 

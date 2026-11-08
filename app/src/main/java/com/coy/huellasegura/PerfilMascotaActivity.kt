@@ -18,7 +18,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -49,21 +48,22 @@ private class EstadoStyle(
     val badgeColorRes: Int,
     val pillBgRes: Int,
     val pillTextColorRes: Int,
-    val labelRes: Int
+    val labelRes: Int,
+    val kind: StatusStyle.Kind
 )
 
 private fun styleFor(estado: RegistroEstado) = when (estado) {
     RegistroEstado.ACEPTADO -> EstadoStyle(
         R.drawable.ic_check_circle, R.color.accent_green, R.color.accent_soft,
-        R.drawable.bg_tag_pill, R.color.brand_dark, R.string.pets_status_record_accepted
+        R.drawable.bg_tag_pill, R.color.brand_dark, R.string.pets_status_record_accepted, StatusStyle.Kind.OK
     )
     RegistroEstado.PENDIENTE -> EstadoStyle(
         R.drawable.ic_warning, R.color.offline_notice_icon, R.color.offline_notice_bg,
-        R.drawable.bg_pill_pending, R.color.offline_notice_text, R.string.pets_status_pending
+        R.drawable.bg_pill_pending, R.color.offline_notice_text, R.string.pets_status_pending, StatusStyle.Kind.WAITING
     )
     RegistroEstado.ANULADO -> EstadoStyle(
         R.drawable.ic_octagon_cross, R.color.danger_red, R.color.danger_red_soft,
-        R.drawable.bg_pill_danger, R.color.danger_red_dark_text, R.string.pets_status_annulled
+        R.drawable.bg_pill_danger, R.color.danger_red_dark_text, R.string.pets_status_annulled, StatusStyle.Kind.DANGER
     )
 }
 
@@ -73,7 +73,7 @@ private fun DocumentSnapshot.registroEstado() = when (getString("estado")) {
     else -> RegistroEstado.PENDIENTE
 }
 
-class PerfilMascotaActivity : AppCompatActivity() {
+class PerfilMascotaActivity : BaseAccessibleActivity() {
 
     companion object {
         const val EXTRA_MASCOTA_ID = "extra_mascota_id"
@@ -166,6 +166,7 @@ class PerfilMascotaActivity : AppCompatActivity() {
             binding.tvVetStatusPill.text = getString(
                 if (estado == "aceptada") R.string.pets_status_accepted else R.string.pets_status_pending
             )
+            StatusStyle.apply(binding.tvVetStatusPill, if (estado == "aceptada") StatusStyle.Kind.OK else StatusStyle.Kind.WAITING)
             binding.tvVetOwnerEmail.text = getString(R.string.pets_owner_prefix, duenoCorreo)
         } else {
             binding.tvOwnerName.text = duenoCorreo.ifBlank { intent.getStringExtra(LoginActivity.EXTRA_USER_NAME) ?: "Usuario" }
@@ -261,8 +262,7 @@ class PerfilMascotaActivity : AppCompatActivity() {
         if (estado != RegistroEstado.ACEPTADO) {
             item.tvStatusPill.visibility = View.VISIBLE
             item.tvStatusPill.text = getString(style.labelRes)
-            item.tvStatusPill.setBackgroundResource(style.pillBgRes)
-            item.tvStatusPill.setTextColor(ContextCompat.getColor(this, style.pillTextColorRes))
+            StatusStyle.apply(item.tvStatusPill, style.kind)
         }
 
         if (!annulled && proximaVisita.isNotBlank()) {
@@ -444,9 +444,11 @@ class PerfilMascotaActivity : AppCompatActivity() {
         val proximaVisita = doc.getString("proximaVisita").orEmpty()
 
         view.tvStatusPill.text = getString(style.labelRes)
-        view.tvStatusPill.setBackgroundResource(style.pillBgRes)
-        view.tvStatusPill.setTextColor(ContextCompat.getColor(this, style.pillTextColorRes))
-        view.tvStatusPill.setStartIcon(style.iconRes, 16, style.iconTintRes)
+        StatusStyle.apply(view.tvStatusPill, style.kind)
+        // El detalle ya lleva un icono propio del estado; el de StatusStyle (si lo hay) lo reemplaza.
+        if (!StatusStyle.drawingsMode(this) && StatusStyle.colorblindMode(this) == "Ninguno") {
+            view.tvStatusPill.setStartIcon(style.iconRes, 16, style.iconTintRes)
+        }
 
         if (fecha.isNotBlank()) {
             view.tvFecha.text = fecha

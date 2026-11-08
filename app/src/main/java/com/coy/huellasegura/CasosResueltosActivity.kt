@@ -205,7 +205,7 @@ class CasosResueltosActivity : BaseAccessibleActivity() {
         )
 
         item.btnCaseAction.text = getString(R.string.resolved_btn_reopen)
-        item.btnCaseAction.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, android.R.color.white))
+        item.btnCaseAction.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.surface_card))
         item.btnCaseAction.setTextColor(ContextCompat.getColor(this, R.color.text_primary))
         item.btnCaseAction.strokeWidth = (1.5f * resources.displayMetrics.density).toInt()
         item.btnCaseAction.setStrokeColorResource(R.color.field_border)

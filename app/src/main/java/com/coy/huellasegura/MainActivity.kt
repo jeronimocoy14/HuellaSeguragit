@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -13,7 +12,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseAccessibleActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
     private val goToLogin = Runnable { navigateToLogin() }

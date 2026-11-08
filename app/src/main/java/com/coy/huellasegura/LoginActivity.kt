@@ -14,7 +14,6 @@ import android.text.style.StyleSpan
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -29,7 +28,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
 import java.util.Calendar
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseAccessibleActivity() {
 
     companion object {
         const val EXTRA_USER_NAME = "extra_user_name"

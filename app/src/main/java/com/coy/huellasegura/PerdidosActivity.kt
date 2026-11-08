@@ -78,7 +78,7 @@ class PerdidosActivity : BaseAccessibleActivity() {
 
     private fun styleSegment(view: TextView, selected: Boolean) {
         view.setBackgroundResource(if (selected) R.drawable.bg_seg_selected else 0)
-        view.setTextColor(ContextCompat.getColor(this, if (selected) android.R.color.white else R.color.text_secondary))
+        view.setTextColor(ContextCompat.getColor(this, if (selected) R.color.on_fill else R.color.text_secondary))
     }
 
     private fun listenCatalog() {
@@ -138,8 +138,14 @@ class PerdidosActivity : BaseAccessibleActivity() {
             else -> Triple(R.string.perdidos_status_review, R.drawable.bg_pill_pending, R.color.offline_notice_text)
         }
         item.tvPill.setText(label)
-        item.tvPill.setBackgroundResource(bg)
-        item.tvPill.setTextColor(ContextCompat.getColor(this, color))
+        StatusStyle.apply(
+            item.tvPill,
+            when (estado) {
+                "publicado" -> StatusStyle.Kind.OK
+                "rechazado" -> StatusStyle.Kind.DANGER
+                else -> StatusStyle.Kind.WAITING
+            }
+        )
 
         val nota = when {
             estado == "rechazado" -> getString(R.string.perdidos_note_reason, doc.getString("motivoRechazo").orEmpty())

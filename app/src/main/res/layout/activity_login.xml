@@ -28,7 +28,7 @@
                 android:layout_gravity="center"
                 android:contentDescription="@string/splash_title"
                 android:src="@drawable/ic_paw"
-                android:tint="@color/surface_background" />
+                android:tint="@color/on_fill" />
         </FrameLayout>
 
         <TextView
@@ -323,7 +323,7 @@
                 android:backgroundTint="@color/accent_green"
                 android:text="@string/btn_ingresar"
                 android:textAllCaps="false"
-                android:textColor="@color/surface_background"
+                android:textColor="@color/on_fill"
                 android:textSize="16sp"
                 app:cornerRadius="12dp" />
 

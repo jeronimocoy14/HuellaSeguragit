@@ -633,4 +633,9 @@
     <string name="export_col_registered_by_staff">Registrado por</string>
     <string name="export_comunitario_active">En la zona</string>
     <string name="export_sheet_community">Animales comunitarios</string>
+    <string name="theme_title">Tema de la app</string>
+    <string name="theme_subtitle">Claro, oscuro o el mismo que tu teléfono</string>
+    <string name="theme_auto">Automático</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
 </resources>

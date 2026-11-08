@@ -318,13 +318,13 @@ class ChatActivity : BaseAccessibleActivity() {
 
             binding.bubble.setBackgroundResource(if (row.mine) R.drawable.bg_bubble_mine else R.drawable.bg_bubble_theirs)
             binding.tvTexto.setTextColor(
-                ContextCompat.getColor(this@ChatActivity, if (row.mine) android.R.color.white else R.color.text_primary)
+                ContextCompat.getColor(this@ChatActivity, if (row.mine) R.color.on_fill else R.color.text_primary)
             )
             binding.tvHora.setTextColor(
                 ContextCompat.getColor(this@ChatActivity, if (row.mine) R.color.splash_subtitle else R.color.text_secondary)
             )
 
-            val textColor = ContextCompat.getColor(this@ChatActivity, if (row.mine) android.R.color.white else R.color.text_primary)
+            val textColor = ContextCompat.getColor(this@ChatActivity, if (row.mine) R.color.on_fill else R.color.text_primary)
             val hasLocation = row.lat != null && row.lon != null
             binding.tvDireccion.visibility = if (hasLocation) View.VISIBLE else View.GONE
             binding.tvMapa.visibility = if (hasLocation) View.VISIBLE else View.GONE

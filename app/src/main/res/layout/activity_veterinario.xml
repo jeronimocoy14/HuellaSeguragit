@@ -131,10 +131,10 @@
             android:id="@+id/btnAddPet"
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:backgroundTint="@color/brand_dark"
+            android:backgroundTint="@color/brand_fill"
             android:text="@string/pets_btn_add"
             android:textAllCaps="false"
-            android:textColor="@android:color/white"
+            android:textColor="@color/on_fill"
             android:textSize="15sp"
             app:cornerRadius="12dp" />
     </LinearLayout>

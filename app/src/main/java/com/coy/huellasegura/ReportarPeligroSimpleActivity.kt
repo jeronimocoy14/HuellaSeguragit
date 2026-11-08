@@ -171,7 +171,7 @@ class ReportarPeligroSimpleActivity : BaseAccessibleActivity(), TextToSpeech.OnI
 
     private fun updateSendButtonState() {
         binding.btnSend.setBackgroundResource(if (hasPhoto) R.drawable.bg_alert_card else R.drawable.bg_button_disabled)
-        binding.tvSendLabel.setTextColor(ContextCompat.getColor(this, if (hasPhoto) android.R.color.white else R.color.disabled_btn_text))
+        binding.tvSendLabel.setTextColor(ContextCompat.getColor(this, if (hasPhoto) R.color.on_fill else R.color.disabled_btn_text))
         binding.iconSendLock.visibility = if (hasPhoto) View.GONE else View.VISIBLE
         binding.tvSendWarning.visibility = if (hasPhoto) View.GONE else View.VISIBLE
     }

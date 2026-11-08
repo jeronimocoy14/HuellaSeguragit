@@ -84,7 +84,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/surface_card"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -104,16 +104,16 @@
             android:id="@+id/btnEncontre"
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:backgroundTint="@color/brand_dark"
+            android:backgroundTint="@color/brand_fill"
             android:text="@string/perdidos_btn_found"
             android:textAllCaps="false"
-            android:textColor="@android:color/white"
+            android:textColor="@color/on_fill"
             android:textSize="15sp"
             android:textStyle="bold"
             app:cornerRadius="14dp"
             app:icon="@drawable/ic_check_circle"
             app:iconGravity="textStart"
             app:iconSize="20dp"
-            app:iconTint="@android:color/white" />
+            app:iconTint="@color/on_fill" />
     </LinearLayout>
 </LinearLayout>

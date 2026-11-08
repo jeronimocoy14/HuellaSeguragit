@@ -17,7 +17,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.coy.huellasegura.databinding.ActivityAccessibilityConfigBinding
 import java.util.Locale
 
-class AccessibilityConfigActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
+class AccessibilityConfigActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListener {
 
     companion object {
         const val PREFS_NAME = "accessibility_prefs"
@@ -33,14 +33,6 @@ class AccessibilityConfigActivity : AppCompatActivity(), TextToSpeech.OnInitList
         private const val SCALE_NORMAL = 1.0f
         private const val SCALE_LARGE = 1.15f
         private const val SCALE_XLARGE = 1.3f
-    }
-
-    override fun attachBaseContext(newBase: Context) {
-        val prefs = AccessibilityPrefs.of(newBase)
-        val scale = prefs.getFloat(KEY_FONT_SCALE, SCALE_LARGE)
-        val config = Configuration(newBase.resources.configuration)
-        config.fontScale = scale
-        super.attachBaseContext(newBase.createConfigurationContext(config))
     }
 
     private lateinit var binding: ActivityAccessibilityConfigBinding
@@ -88,6 +80,7 @@ class AccessibilityConfigActivity : AppCompatActivity(), TextToSpeech.OnInitList
 
         setupTextSizeChips()
         setupHighContrast()
+        setupThemeChips()
         setupColorblindChips()
         setupTtsSwitch()
         if (!isProfessionalMode) {
@@ -143,39 +136,31 @@ class AccessibilityConfigActivity : AppCompatActivity(), TextToSpeech.OnInitList
     }
 
     private fun setupHighContrast() {
-        val enabled = prefs.getBoolean(KEY_HIGH_CONTRAST, false)
-        binding.switchHighContrast.isChecked = enabled
-        applyHighContrast(enabled)
-
+        binding.switchHighContrast.isChecked = prefs.getBoolean(KEY_HIGH_CONTRAST, false)
         binding.switchHighContrast.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean(KEY_HIGH_CONTRAST, isChecked).apply()
-            applyHighContrast(isChecked)
             speak(if (isChecked) "Alto contraste activado" else "Alto contraste desactivado")
+            // Cambia la paleta de toda la app: esta pantalla se vuelve a crear con los colores nuevos.
+            recreate()
         }
     }
 
-    private fun applyHighContrast(enabled: Boolean) {
-        val bg = if (enabled) ContextCompat.getColor(this, R.color.high_contrast_bg) else ContextCompat.getColor(this, R.color.surface_background)
-        val titleColor = if (enabled) ContextCompat.getColor(this, R.color.high_contrast_text) else ContextCompat.getColor(this, R.color.text_primary)
-        val subColor = if (enabled) ContextCompat.getColor(this, R.color.high_contrast_text) else ContextCompat.getColor(this, R.color.text_secondary)
-        val cardStroke = if (enabled) ContextCompat.getColor(this, R.color.high_contrast_accent) else ContextCompat.getColor(this, R.color.field_border)
-        val iconBg = if (enabled) ContextCompat.getColor(this, R.color.high_contrast_bg) else ContextCompat.getColor(this, R.color.accent_soft)
-
-        binding.root.setBackgroundColor(bg)
-        binding.footerContainer.setBackgroundColor(bg)
-        binding.tvDescription.setTextColor(subColor)
-
-        cards.forEach { card ->
-            (card.container.background?.mutate() as? GradientDrawable)?.apply {
-                setColor(if (enabled) ContextCompat.getColor(this@AccessibilityConfigActivity, R.color.high_contrast_bg) else android.graphics.Color.WHITE)
-                setStroke(dp(1.5f), cardStroke)
+    private fun setupThemeChips() {
+        when (prefs.getString(AccessibilityTheme.KEY_THEME, AccessibilityTheme.THEME_AUTO)) {
+            AccessibilityTheme.THEME_LIGHT -> binding.chipThemeLight.isChecked = true
+            AccessibilityTheme.THEME_DARK -> binding.chipThemeDark.isChecked = true
+            else -> binding.chipThemeAuto.isChecked = true
+        }
+        binding.chipGroupTheme.setOnCheckedStateChangeListener { _, ids ->
+            val choice = when (ids.firstOrNull()) {
+                R.id.chipThemeLight -> AccessibilityTheme.THEME_LIGHT
+                R.id.chipThemeDark -> AccessibilityTheme.THEME_DARK
+                else -> AccessibilityTheme.THEME_AUTO
             }
-            (card.iconWrap.background?.mutate() as? GradientDrawable)?.apply {
-                setColor(iconBg)
-                if (enabled) setStroke(dp(1.5f), cardStroke) else setStroke(0, 0)
-            }
-            card.title.setTextColor(titleColor)
-            card.subtitle.setTextColor(subColor)
+            if (choice == prefs.getString(AccessibilityTheme.KEY_THEME, AccessibilityTheme.THEME_AUTO)) return@setOnCheckedStateChangeListener
+            prefs.edit().putString(AccessibilityTheme.KEY_THEME, choice).apply()
+            // AppCompat vuelve a crear la pantalla con el modo elegido.
+            AccessibilityTheme.applyNightMode(this)
         }
     }
 

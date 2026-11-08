@@ -103,7 +103,7 @@
             android:layout_height="46dp"
             android:layout_marginStart="4dp"
             android:layout_weight="1"
-            android:backgroundTint="@color/brand_dark"
+            android:backgroundTint="@color/brand_fill"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:paddingStart="4dp"

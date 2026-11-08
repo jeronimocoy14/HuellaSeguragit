@@ -279,10 +279,10 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/brand_dark"
+        android:backgroundTint="@color/brand_fill"
         android:text="@string/comunitarios_btn_save"
         android:textAllCaps="false"
-        android:textColor="@android:color/white"
+        android:textColor="@color/on_fill"
         android:textSize="15sp"
         android:textStyle="bold"
         app:cornerRadius="14dp" />

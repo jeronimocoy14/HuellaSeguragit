@@ -54,7 +54,7 @@
                 android:layout_gravity="center"
                 android:contentDescription="@string/splash_title"
                 android:src="@drawable/ic_paw"
-                android:tint="@color/surface_background" />
+                android:tint="@color/splash_text_primary" />
         </FrameLayout>
 
         <TextView

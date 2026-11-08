@@ -1,22 +1,20 @@
 package com.coy.huellasegura
 
 import android.content.Context
-import android.content.res.Configuration
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 
+/** Base de todas las pantallas: aplica las preferencias de accesibilidad (texto, modo oscuro, alto contraste). */
 open class BaseAccessibleActivity : AppCompatActivity() {
 
     override fun attachBaseContext(newBase: Context) {
-        val prefs = AccessibilityPrefs.of(newBase)
-        val scale = prefs.getFloat(AccessibilityConfigActivity.KEY_FONT_SCALE, 1.15f)
-        val config = Configuration(newBase.resources.configuration)
-        config.fontScale = scale
-        super.attachBaseContext(newBase.createConfigurationContext(config))
+        super.attachBaseContext(AccessibilityTheme.wrap(newBase))
     }
 
-    protected fun isHighContrastEnabled(): Boolean =
-        AccessibilityPrefs.of(this)
-            .getBoolean(AccessibilityConfigActivity.KEY_HIGH_CONTRAST, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        AccessibilityTheme.applyNightMode(this)
+        super.onCreate(savedInstanceState)
+    }
 
     protected fun isTtsEnabled(): Boolean =
         AccessibilityPrefs.of(this)

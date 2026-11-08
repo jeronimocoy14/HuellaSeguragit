@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Alto contraste: negro, blanco y amarillo.
+  OJO: usa el calificador «round» (pantalla redonda) como interruptor. Ningún teléfono lo activa solo; la app lo
+  fuerza en BaseAccessibleActivity cuando la persona enciende «Alto contraste». «round» tiene más prioridad que
+  «night», así que esta paleta gana sobre la del modo oscuro (y el alto contraste siempre usa el tema oscuro).
+-->
+<resources>
+    <color name="surface_background">#000000</color>
+    <color name="surface_card">#000000</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#E8E8E8</color>
+    <color name="field_border">#FFFFFF</color>
+    <color name="field_placeholder">#BDBDBD</color>
+    <color name="link_color">#7DD3FF</color>
+    <color name="brand_dark">#FFD400</color>
+    <color name="brand_fill">#FFD400</color>
+    <color name="on_fill">#000000</color>
+    <color name="accent_green">#FFD400</color>
+    <color name="accent_soft">#1A1A1A</color>
+    <color name="offline_bg">#1A1A1A</color>
+    <color name="danger_red">#FF8A80</color>
+    <color name="danger_fill">#FF8A80</color>
+    <color name="danger_red_soft">#330000</color>
+    <color name="danger_red_dark_text">#FFB4AB</color>
+    <color name="disabled_btn_bg">#333333</color>
+    <color name="disabled_btn_text">#CCCCCC</color>
+    <color name="location_sent_text">#FFFFFF</color>
+    <color name="map_placeholder_bg">#1A1A1A</color>
+    <color name="offline_notice_bg">#1A1A00</color>
+    <color name="offline_notice_icon">#FFD400</color>
+    <color name="offline_notice_text">#FFE680</color>
+</resources>

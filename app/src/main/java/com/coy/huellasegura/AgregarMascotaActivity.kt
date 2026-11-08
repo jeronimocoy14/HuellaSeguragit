@@ -3,7 +3,6 @@ package com.coy.huellasegura
 import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -13,7 +12,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
 
-class AgregarMascotaActivity : AppCompatActivity() {
+class AgregarMascotaActivity : BaseAccessibleActivity() {
 
     private lateinit var binding: ActivityAgregarMascotaBinding
     private var selectedSpecies = ""

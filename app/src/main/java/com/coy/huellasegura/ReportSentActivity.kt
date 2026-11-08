@@ -3,13 +3,12 @@ package com.coy.huellasegura
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.addCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import com.coy.huellasegura.databinding.ActivityReportSentBinding
 
-class ReportSentActivity : AppCompatActivity() {
+class ReportSentActivity : BaseAccessibleActivity() {
 
     companion object {
         const val EXTRA_SIMPLIFIED = "extra_simplified"

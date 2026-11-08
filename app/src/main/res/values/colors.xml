@@ -13,6 +13,12 @@
     <color name="accent_green">@color/splash_icon_background</color>
     <color name="surface_background">@color/splash_text_primary</color>
 
+    <!-- Superficies y textos que sobre un relleno de color: en claro, oscuro y alto contraste cambian de valor -->
+    <color name="surface_card">#FFFFFFFF</color>
+    <color name="brand_fill">@color/splash_background</color>
+    <color name="on_fill">#FFFFFFFF</color>
+    <color name="danger_fill">#B23B2E</color>
+
     <color name="text_primary">#1F2A24</color>
     <color name="text_secondary">#6B6459</color>
     <color name="field_border">#E4DFD3</color>
@@ -21,9 +27,6 @@
     <color name="accent_soft">#E3EFE6</color>
     <color name="offline_bg">#EFEAE0</color>
 
-    <color name="high_contrast_bg">#000000</color>
-    <color name="high_contrast_text">#FFFFFF</color>
-    <color name="high_contrast_accent">#FFD400</color>
 
     <color name="danger_red">#B23B2E</color>
     <color name="danger_red_soft">#F8E6E3</color>

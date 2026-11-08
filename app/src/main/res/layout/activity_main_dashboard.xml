@@ -118,7 +118,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/dashboard_report_title"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/on_fill"
                         android:textSize="16.5sp"
                         android:textStyle="bold" />
 
@@ -128,7 +128,7 @@
                         android:layout_marginTop="3dp"
                         android:alpha="0.92"
                         android:text="@string/dashboard_report_subtitle"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/on_fill"
                         android:textSize="12.5sp" />
                 </LinearLayout>
 
@@ -383,7 +383,7 @@
         android:layout_marginTop="14dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/surface_card"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:gravity="center_vertical"

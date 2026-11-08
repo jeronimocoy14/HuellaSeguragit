@@ -244,7 +244,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/surface_card"
         android:orientation="horizontal"
         android:padding="16dp">
 
@@ -254,17 +254,17 @@
             android:layout_height="52dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:backgroundTint="@color/brand_dark"
+            android:backgroundTint="@color/brand_fill"
             android:text="@string/pets_btn_add_medical"
             android:textAllCaps="false"
-            android:textColor="@android:color/white"
+            android:textColor="@color/on_fill"
             android:textSize="14sp"
             android:textStyle="bold"
             app:cornerRadius="12dp"
             app:icon="@drawable/ic_plus"
             app:iconGravity="textStart"
             app:iconSize="18dp"
-            app:iconTint="@android:color/white" />
+            app:iconTint="@color/on_fill" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnReportLost"
@@ -272,10 +272,10 @@
             android:layout_height="52dp"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:backgroundTint="@color/danger_red"
+            android:backgroundTint="@color/danger_fill"
             android:text="@string/pets_btn_report_lost"
             android:textAllCaps="false"
-            android:textColor="@android:color/white"
+            android:textColor="@color/on_fill"
             android:textSize="13sp"
             app:cornerRadius="12dp" />
     </LinearLayout>

@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/danger_red"
+        android:background="@color/danger_fill"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="20dp"
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="@string/dashboard_report_title"
-            android:textColor="@android:color/white"
+            android:textColor="@color/on_fill"
             android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -229,10 +229,10 @@
             android:id="@+id/btnEnviar"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:backgroundTint="@color/danger_red"
+            android:backgroundTint="@color/danger_fill"
             android:text="@string/btn_enviar_reporte"
             android:textAllCaps="false"
-            android:textColor="@android:color/white"
+            android:textColor="@color/on_fill"
             android:textSize="16sp"
             app:cornerRadius="12dp" />
     </LinearLayout>

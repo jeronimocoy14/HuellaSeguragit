@@ -241,7 +241,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:text="@string/btn_confirmar_lugar"
-                android:textColor="@android:color/white"
+                android:textColor="@color/on_fill"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -251,7 +251,7 @@
                 android:contentDescription="@null"
                 android:rotation="180"
                 android:src="@drawable/ic_arrow_back"
-                android:tint="@android:color/white" />
+                android:tint="@color/on_fill" />
         </LinearLayout>
 
         <LinearLayout

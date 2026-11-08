@@ -1,7 +1,23 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Tema oscuro: los componentes de Material toman los mismos colores que el resto de la app. -->
     <style name="Base.Theme.HUELLASEGURA" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/accent_green</item>
+        <item name="colorOnPrimary">@color/on_fill</item>
+        <item name="colorSecondary">@color/brand_fill</item>
+        <item name="colorOnSecondary">@color/on_fill</item>
+        <item name="colorSecondaryContainer">@color/accent_green</item>
+        <item name="colorOnSecondaryContainer">@color/on_fill</item>
+        <item name="android:colorBackground">@color/surface_background</item>
+        <item name="android:windowBackground">@color/surface_background</item>
+        <item name="colorSurface">@color/surface_card</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorSurfaceVariant">@color/accent_soft</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        <item name="colorOutline">@color/field_placeholder</item>
+        <item name="colorOutlineVariant">@color/field_border</item>
+        <item name="colorSurfaceContainer">@color/surface_card</item>
+        <item name="colorSurfaceContainerHigh">@color/surface_card</item>
+        <item name="colorSurfaceContainerHighest">@color/accent_soft</item>
+        <item name="colorError">@color/danger_red</item>
     </style>
 </resources>

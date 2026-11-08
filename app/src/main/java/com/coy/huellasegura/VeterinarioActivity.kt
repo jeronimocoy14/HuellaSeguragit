@@ -137,6 +137,7 @@ class VeterinarioActivity : BaseAccessibleActivity() {
         item.tvMascotaEstado.text = getString(
             if (estado == "aceptada") R.string.pets_status_accepted else R.string.pets_status_pending
         )
+        StatusStyle.apply(item.tvMascotaEstado, if (estado == "aceptada") StatusStyle.Kind.OK else StatusStyle.Kind.WAITING)
 
         item.root.setOnClickListener {
             startActivity(Intent(this, PerfilMascotaActivity::class.java).apply {

@@ -45,7 +45,6 @@ class MainDashboardActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListe
         }.also { it.start() }
         pendingBanner = PendingBanner(this, binding.pendingBanner, userEmail.orEmpty().trim().lowercase()).also { it.start() }
 
-        if (isHighContrastEnabled()) applyHighContrast()
 
         binding.btnListen.visibility = if (isTtsEnabled()) View.VISIBLE else View.GONE
         if (isTtsEnabled()) tts = TextToSpeech(this, this)
@@ -154,31 +153,6 @@ class MainDashboardActivity : BaseAccessibleActivity(), TextToSpeech.OnInitListe
                 binding.tvMyReportsSubtitle.text =
                     if (active == 0) getString(R.string.reports_count_none) else getString(R.string.reports_count, active)
             }
-    }
-
-    private fun applyHighContrast() {
-        val bg = ContextCompat.getColor(this, R.color.high_contrast_bg)
-        val text = ContextCompat.getColor(this, R.color.high_contrast_text)
-        val accent = ContextCompat.getColor(this, R.color.high_contrast_accent)
-
-        binding.root.setBackgroundColor(bg)
-        binding.tvUserName.setTextColor(text)
-
-        listOf(binding.cardLostFound, binding.cardChatVet.getChildAt(0) as View, binding.cardMyReports, binding.cardMyPets)
-            .forEach { card ->
-                (card.background?.mutate() as? GradientDrawable)?.apply {
-                    setColor(bg)
-                    setStroke(dp(1.5f), accent)
-                }
-                forEachTextView(card) { it.setTextColor(text) }
-            }
-    }
-
-    private fun forEachTextView(view: View, action: (android.widget.TextView) -> Unit) {
-        if (view is android.widget.TextView) action(view)
-        if (view is android.view.ViewGroup) {
-            for (i in 0 until view.childCount) forEachTextView(view.getChildAt(i), action)
-        }
     }
 
     private fun dp(value: Float): Int = (value * resources.displayMetrics.density).toInt()
