@@ -67,6 +67,10 @@ npm install
 npm test
 ```
 
+## Pruebas automáticas
+
+Hay 185 pruebas en tres capas (120 de las reglas de seguridad, 39 unitarias y 26 con la app abierta). Qué prueba cada una y cómo correrlas está en [`PRUEBAS.md`](PRUEBAS.md).
+
 ## Cuentas de prueba
 
 El equipo usa tres cuentas para probar cada rol (la contraseña no se publica aquí; la sabe el equipo):

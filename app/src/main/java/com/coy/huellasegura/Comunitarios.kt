@@ -25,13 +25,13 @@ object Comunitarios {
     enum class Health { COMPLETE, PARTIAL, NONE }
 
     /** Cuánto le falta a un animal: esterilizado y vacunado (completo), uno de los dos (parcial) o ninguno. */
-    fun healthOf(doc: com.google.firebase.firestore.DocumentSnapshot): Health {
-        val done = listOf(doc.getBoolean("esterilizado") == true, doc.getBoolean("vacunado") == true).count { it }
-        return when (done) {
-            2 -> Health.COMPLETE
-            1 -> Health.PARTIAL
-            else -> Health.NONE
-        }
+    fun healthOf(doc: com.google.firebase.firestore.DocumentSnapshot): Health =
+        healthOf(doc.getBoolean("esterilizado") == true, doc.getBoolean("vacunado") == true)
+
+    fun healthOf(sterilized: Boolean, vaccinated: Boolean): Health = when (listOf(sterilized, vaccinated).count { it }) {
+        2 -> Health.COMPLETE
+        1 -> Health.PARTIAL
+        else -> Health.NONE
     }
 
     /** Diálogo para marcar si el animal está esterilizado y vacunado; guarda con la misma lógica sin conexión de la app. */

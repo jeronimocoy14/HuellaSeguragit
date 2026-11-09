@@ -243,7 +243,10 @@ object SpeciesDetector {
 
     /** Categoría de la app para el tipo de animal reconocido; lo que no encaja (león, pez, insecto...) va a "Otro". */
     private fun categoryFor(key: String): Species.Item {
-        val nameRes = categories[key] ?: R.string.pets_species_other
+        val nameRes = nameResFor(key)
         return Species.all.first { it.nameRes == nameRes }
     }
+
+    /** Texto de la categoría de la app para una clave del reconocimiento (p. ej. «parrot» -> Ave). */
+    internal fun nameResFor(key: String): Int = categories[key] ?: R.string.pets_species_other
 }
